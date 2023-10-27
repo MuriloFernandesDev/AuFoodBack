@@ -1,9 +1,18 @@
 ﻿using AuFood.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
 namespace AuFood.Controllers
 {
+
+    public class StoreListAll : Store
+    {
+        public string Rating { get; set; }
+
+        public int QtdRating { get; set; }
+    }
+
     [Route("api/[controller]")]
     [ApiController]
     public class StoreController : Controller
@@ -47,20 +56,36 @@ namespace AuFood.Controllers
         }
 
         [HttpGet("list_all")]
-        public async Task<IEnumerable<Store>> GetListStoreAll()
+        public async Task<IEnumerable<StoreListAll>> GetListStoreAll()
         {
             //remover todo espaço de w.Name e name e colocar -
             var Store = await _context.Store
+                .Include(w => w.AvaliationsStories)
                 .Include(w => w.City)
                     .ThenInclude(w => w.State)
-                .Select(w => new Store
-                {
-                    Name = w.Name,
-                    Logo = w.Logo
-                })
                 .ToListAsync();
 
-            return Store;
+            var StoreListAll = Store.Select(w => new StoreListAll
+            {
+                Logo = w.Logo,
+                Name = w.Name,
+                Rating = w.AvaliationsStories.Any() ? (w.AvaliationsStories.Sum(a => a.Rating) / w.AvaliationsStories.Count).ToString("0.0") : "0.0",
+                QtdRating = w.AvaliationsStories.Count
+            }).ToList();
+
+            return StoreListAll;
+        }
+
+        [HttpGet("avaliation/{id}")]
+        public async Task<int> GetAvalationStore(int id)
+        {
+            //buscar lista de avaliacoes por store id e fazer a média
+            var Avaliation = await _context.AvaliationStore
+                .Where(w => w.StoreId == id)
+                .Select(w => w.Rating)
+                .ToListAsync();
+
+            return Avaliation.Sum() / Avaliation.Count;
         }
     }
 }

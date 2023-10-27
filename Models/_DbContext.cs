@@ -25,6 +25,7 @@ namespace AuFood.Models
         public DbSet<City> City { get; set; }
 
         public DbSet<State> State { get; set; }
+        public DbSet<AvaliationStore> AvaliationStore { get; set; }
         
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -71,13 +72,13 @@ namespace AuFood.Models
 
                 entity.HasOne(e => e.ProductCategory)
                     .WithMany(e => e.Products)
-                    .HasForeignKey(e => e.IdProductCategory)
+                    .HasForeignKey(e => e.ProductCategoryId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Product_ProductCategory");
 
                 entity.HasOne(e => e.Client)
                     .WithMany(e => e.Products)
-                    .HasForeignKey(e => e.IdClient)
+                    .HasForeignKey(e => e.ClientId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Client_Product");
             });
@@ -95,7 +96,7 @@ namespace AuFood.Models
 
                 entity.HasOne(e => e.Product)
                     .WithMany(e => e.ProductsPrice)
-                    .HasForeignKey(e => e.IdProduct)
+                    .HasForeignKey(e => e.ProductId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_ProductPrice_Product");
             });
@@ -116,7 +117,7 @@ namespace AuFood.Models
 
                 entity.HasMany(e => e.Products)
                     .WithOne(e => e.ProductCategory)
-                    .HasForeignKey(e => e.IdProductCategory)
+                    .HasForeignKey(e => e.ProductCategoryId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Product_ProductCategory");
             });
@@ -233,6 +234,24 @@ namespace AuFood.Models
                     .HasConstraintName("FK_Store_City");
             });
 
+            modelBuilder.Entity<AvaliationStore>(entity =>
+            {
+                entity.HasKey(e => e.Id)
+                    .HasName("PRIMARY");
+
+                entity.Property(e => e.Rating)
+                    .HasColumnType("int(2)");
+
+                entity.Property(e => e.Comment)
+                    .HasMaxLength(255);
+
+                entity.HasOne(e => e.Store)
+                    .WithMany(e => e.AvaliationsStories)
+                    .HasForeignKey(e => e.StoreId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_Avaliation_Store");
+            });
+
             modelBuilder.Entity<StoreCategory>(entity =>
             {
                 entity.HasKey(e => e.Id)
@@ -243,8 +262,6 @@ namespace AuFood.Models
 
                 entity.Property(e => e.Icon)
                     .HasMaxLength(30);
-
-                
             });
 
             modelBuilder.Entity<StoreCategoryMapping>()

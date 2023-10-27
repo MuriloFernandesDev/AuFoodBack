@@ -24,9 +24,9 @@ namespace AuFood.Models
 
         public string? ListStoreId { get; set; }
 
-        public int IdProductCategory { get; set; }
+        public int ProductCategoryId { get; set; }
 
-        public int IdClient { get; set; }
+        public int ClientId { get; set; }
 
         public virtual Client? Client { get; set; }
 

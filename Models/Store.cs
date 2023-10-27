@@ -39,5 +39,7 @@
         public virtual City? City { get; set; }
        
         public ICollection<StoreCategoryMapping> StoreCategoryStores { get; set; }
+        
+        public ICollection<AvaliationStore> AvaliationsStories { get; set; }
     }
 }

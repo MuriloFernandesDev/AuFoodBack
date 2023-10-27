@@ -21,7 +21,7 @@
         /// <summary>
         /// Id of product
         /// </summary>
-        public int IdProduct { get; set; }
+        public int ProductId { get; set; }
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
