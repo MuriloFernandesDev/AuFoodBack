@@ -2,7 +2,6 @@
 using AuFood.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace AuFood.Controllers
 {
@@ -82,6 +81,12 @@ namespace AuFood.Controllers
             return ListProduct;
         }
 
+        /// <summary>
+        /// Method for search for product's
+        /// </summary>
+        /// <param name="store_id">ID for Store</param>
+        /// <param name="pParams">Params for search</param>
+        /// <returns></returns>
         [HttpGet("search_product_store/{store_id}")]
         public async Task<IEnumerable<ProductList>> SearchProduct(int store_id, [FromQuery] IParams pParams)
         {
@@ -116,6 +121,11 @@ namespace AuFood.Controllers
             return await ListProduct.ToListAsync();
         }
 
+        /// <summary>
+        /// Method for get product's on cart store
+        /// </summary>
+        /// <param name="store_id">ID for Store</param>
+        /// <returns></returns>
         [HttpGet("list_product_cart/{store_id}")]
         public async Task<IEnumerable<Product>> GetListProduct([FromQuery] ListInt pParams, int store_id)
         {
