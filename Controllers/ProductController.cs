@@ -2,6 +2,7 @@
 using AuFood.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace AuFood.Controllers
 {
@@ -32,6 +33,11 @@ namespace AuFood.Controllers
     public class ListInt
     {
         public List<int> list_id { get; set; }
+    }
+
+    public class IParams
+    {
+        public string q { get; set; }
     }
 
     [Route("api/[controller]")]
@@ -74,6 +80,40 @@ namespace AuFood.Controllers
                 .ToListAsync();
 
             return ListProduct;
+        }
+
+        [HttpGet("search_product_store/{store_id}")]
+        public async Task<IEnumerable<ProductList>> SearchProduct(int store_id, [FromQuery] IParams pParams)
+        {
+            var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, store_id);
+            pParams.q = pParams.q.ToLower();
+
+            var ListProduct = _context.Product
+                .Include(w => w.ProductCategory)
+                .Include(w => w.ProductsPrice)
+                .Where(w => ListProductOnStore.Contains(w.Id))
+                .Select(p => new ProductList
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    productCategory = p.ProductCategory,
+                    Image = p.Image
+                })
+                .AsQueryable();
+
+            var ListFilterNameProduct = ListProduct.Where(w => w.Name.ToLower().Contains(pParams.q)).AsQueryable();
+
+            //If you can't find a product by name, search for products by category name
+            if (!ListFilterNameProduct.Any())
+            {
+                ListProduct = ListProduct.Where(w => w.productCategory.Name.ToLower().Contains(pParams.q)).AsQueryable();
+            }
+            else
+            {
+                ListProduct = ListFilterNameProduct;
+            }
+
+            return await ListProduct.ToListAsync();
         }
 
         [HttpGet("list_product_cart/{store_id}")]

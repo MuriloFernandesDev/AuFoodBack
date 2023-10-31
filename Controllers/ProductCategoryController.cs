@@ -1,5 +1,7 @@
-﻿using AuFood.Models;
+﻿using AuFood.Auxiliary;
+using AuFood.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -25,6 +27,19 @@ namespace AuFood.Controllers
             await _context.SaveChangesAsync();
 
             return productCategory;
+        }
+
+        [HttpGet("list_categories_store/{store_id}")]
+        public async Task<List<ProductCategory>> Post(int store_id)
+        {
+            var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, store_id);
+
+            var listCategories = await _context.ProductCategory
+                .Include(w => w.Products)
+                .Where(w => w.Products.Any(p => ListProductOnStore.Contains(p.Id)) && w.Products.Count > 0)
+                .ToListAsync();
+
+            return listCategories;
         }
     }
 }

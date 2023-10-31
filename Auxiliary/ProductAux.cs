@@ -26,8 +26,5 @@ namespace AuFood.Auxiliary
 
             return productIds;
         }
-
-
-
     }
 }
