@@ -32,6 +32,12 @@
 
         public string BackgroundImage { get; set; }
 
+        public string ColorPrimary { get; set; }
+
+        public string ColorSecondary { get; set; }
+
+        public string ColorBackground { get; set; }
+
         //public double TimeDelivery { get; set; }
 
         public int CityId { get; set; }

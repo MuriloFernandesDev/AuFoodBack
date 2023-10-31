@@ -16,6 +16,8 @@ namespace AuFood.Controllers
         public string TimeDelivery { get; set; }
 
         public ProductCategory? productCategory { get; set; }
+
+        public string Image { get; set; }
     }
 
     public class ProductOnCategory
@@ -25,6 +27,11 @@ namespace AuFood.Controllers
         public int CategoryId { get; set; }
 
         public List<ProductList> ListProduct { get; set; }
+    }
+
+    public class ListInt
+    {
+        public List<int> list_id { get; set; }
     }
 
     [Route("api/[controller]")]
@@ -38,9 +45,6 @@ namespace AuFood.Controllers
             _context = context;
         }
 
-        /*
-         * Pega uma lista de todos os produtos que a loja possui permissão
-         */
         /// <summary>
         /// Method for get list all products
         /// </summary>
@@ -64,13 +68,26 @@ namespace AuFood.Controllers
                         .Select(pp => (double?)pp.Price)
                         .FirstOrDefault() ?? 0.00, // Use DefaultIfEmpty to provide a default value if no price is found
                     TimeDelivery = p.TimeDelivery.ToString(),
-                    productCategory = p.ProductCategory
+                    productCategory = p.ProductCategory,
+                    Image = p.Image
                 })
                 .ToListAsync();
 
             return ListProduct;
         }
-       
+
+        [HttpGet("list_product_cart/{store_id}")]
+        public async Task<IEnumerable<Product>> GetListProduct([FromQuery] ListInt pParams, int store_id)
+        {
+            var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, store_id);
+
+            var ListProduct = await _context.Product
+                .Where(w => pParams.list_id.Contains(w.Id) && ListProductOnStore.Contains(w.Id))
+                .ToListAsync();
+
+            return ListProduct;
+        }
+
         /// <summary>
         /// Method for Retrieve all products by category.
         /// Fetch the price for each product determined by the current day of the week. 
@@ -98,7 +115,8 @@ namespace AuFood.Controllers
                         Id = p.Id,
                         Name = p.Name,
                         Price = p.ProductsPrice.Where(w => w.DayWeek == DateTime.Now.DayOfWeek).First().Price,
-                        TimeDelivery = p.TimeDelivery.ToString()
+                        TimeDelivery = p.TimeDelivery.ToString(),
+                        Image = p.Image
                     })
                     .ToList()
                 })
