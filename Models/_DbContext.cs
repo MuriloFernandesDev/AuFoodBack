@@ -34,6 +34,7 @@ namespace AuFood.Models
         public DbSet<ConsumerAddress> ConsumerAddress { get; set; }
         public DbSet<ConsumerStore> ConsumerStore { get; set; }
         public DbSet<CartProduct> CartProduct { get; set; }
+        public DbSet<Cart> Cart { get; set; }
         
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -25,11 +25,12 @@ namespace AuFood.Models
 
         public int ConsumerAddressId { get; set; }
 
-        public virtual Consumer Consumer { get; set; } = null!;
-        public virtual ConsumerAddress ConsumerAddress { get; set; } = null!;
+        public virtual Consumer? Consumer { get; set; }
 
-        public virtual Store Store { get; set; } = null!;
+        public virtual ConsumerAddress? ConsumerAddress { get; set; }
+
+        public virtual Store? Store { get; set; }
         
-        public ICollection<CartProduct> CartProduct { get; set; } = null!;
+        public ICollection<CartProduct> CartProduct { get; set; }
     }
 }
