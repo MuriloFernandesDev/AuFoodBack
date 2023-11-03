@@ -36,7 +36,8 @@ namespace AuFood.Models
 
         public virtual ICollection<ProductPrice>? ProductsPrice { get; set; }
 
-        [JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public virtual ICollection<CartProduct>? CartProduct { get; set; }
     }
 }

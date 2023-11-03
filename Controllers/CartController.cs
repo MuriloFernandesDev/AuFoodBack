@@ -80,8 +80,28 @@ namespace AuFood.Controllers
             newCart.ConsumerAddressId = ConsumerAddress.Id;
             newCart.StoreId = Store.Id;
             newCart.Date = DateTime.Now;
+            newCart.TotalPrice = 0;
 
             _context.Cart.Add(newCart);
+
+            foreach(var product in cart.products)
+            {
+                var ProductDB = await _context.Product
+                    .Include(w => w.ProductsPrice)
+                    .Where(w => w.Id == product.id)
+                    .FirstOrDefaultAsync();
+
+                newCart.TotalPrice += ProductDB.ProductsPrice
+                    .Where(w => w.DayWeek == DateTime.Now.DayOfWeek)
+                    .Select(w => w.Price)
+                    .FirstOrDefault();
+
+                _context.CartProduct.Add(new CartProduct
+                {
+                    Cart = newCart,
+                    Product = ProductDB
+                });
+            }
 
             await _context.SaveChangesAsync();
 

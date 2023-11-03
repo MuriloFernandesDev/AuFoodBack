@@ -55,6 +55,9 @@ namespace AuFood.Models
         public ICollection<StoreCategoryMapping> StoreCategoryStores { get; set; }
         
         public ICollection<AvaliationStore> AvaliationsStories { get; set; }
+
+        [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public ICollection<Cart> Cart { get; set; }
 
         [System.Text.Json.Serialization.JsonIgnore]

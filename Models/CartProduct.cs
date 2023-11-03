@@ -7,8 +7,8 @@ namespace AuFood.Models
         public int CartId { get; set; }
         public int ProductId { get; set; }
 
-
-        [JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public Cart Cart { get; set; } = null!;
         public Product Product { get; set; } = null!;
     }
