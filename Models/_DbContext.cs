@@ -343,6 +343,12 @@ namespace AuFood.Models
 
                 entity.Property(e => e.Phone)
                     .HasMaxLength(30);
+                
+                entity.Property(e => e.Code)
+                    .HasMaxLength(4);
+
+                entity.Property(e => e.PhoneConfirmed)
+                    .HasColumnType("bit(1)");
 
                 entity.Property(e => e.Email)
                     .HasMaxLength(30);

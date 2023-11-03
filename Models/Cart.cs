@@ -22,6 +22,7 @@ namespace AuFood.Models
         public int ConsumerId { get; set; }
 
         public int StoreId { get; set; }
+
         public int ConsumerAddressId { get; set; }
 
         public virtual Consumer Consumer { get; set; } = null!;

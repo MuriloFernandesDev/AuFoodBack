@@ -20,7 +20,6 @@ namespace AuFood.Models
         public string? Complement { get; set; }
         
         public int? ZipCode { get; set; }
-
         
         public int CityId { get; set; }
 

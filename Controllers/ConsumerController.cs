@@ -23,9 +23,9 @@ namespace AuFood.Controllers
         }
 
         /// <summary>
-        /// Get list all Consumer in Store
+        /// Get list all Consumer from Store
         /// </summary>
-        /// <param name="store_id">ID for Store</param>
+        /// <param name="store_id">ID from Store</param>
         /// <returns></returns>
         [HttpGet("list_consumer_by_store/{store_id}")]
         public async Task<List<Consumer>> GetListConsumerByStore(int store_id)
@@ -40,17 +40,23 @@ namespace AuFood.Controllers
         }
 
         /// <summary>
-        /// Get list all Consumer in Store
+        /// Get list all Consumer from Store
         /// </summary>
-        /// <param name="store_id">ID for Store</param>
+        /// <param name="store_id">ID from Store</param>
         /// <returns></returns>
         [HttpGet("get_consumer_by_phone/{phone}")]
         public async Task<ActionResult<Consumer>> GetConsumer(string phone)
         {
             var consumer = await _context.Consumer
-                .Include(w => w.ConsumerAddress)
-                .Where(w => w.Phone == phone && !string.IsNullOrEmpty(w.Password.ToString()))
+                .Where(w => w.Phone == phone && w.PhoneConfirmed == true)
                 .OrderBy(w => w.Id)
+                .Select(w => new Consumer
+                {
+                    Id = w.Id,
+                    Name = w.Name,
+                    Phone = w.Phone,
+                    Email = w.Email
+                })
                 .FirstOrDefaultAsync();
 
             if(consumer == null)
@@ -59,6 +65,55 @@ namespace AuFood.Controllers
             }
 
             return consumer;
+        }
+
+        /// <summary>
+        /// Search for the consumer by ID and send the code to the phone
+        /// </summary>
+        /// <param name="consumer_id">ID from Consumer</param>
+        /// <returns></returns>
+        [HttpPost("confirm_consumer/{consumer_id}")]
+        public async Task<ActionResult<bool>> ConfirmConsumer(int consumer_id)
+        {
+            var consumer = await _context.Consumer.FindAsync(consumer_id);
+
+            // Atribui código para o usuário para a próxima verificação
+            consumer.Code = new Random().Next(10000).ToString("D4");
+            await _context.SaveChangesAsync();
+
+            //enviar o codigo para o consumidor e retornar true
+
+            return true;
+        }
+
+        /// <summary>
+        /// Confirm the consumer code
+        /// </summary>
+        /// <param name="consumer_id">ID from Consumer</param>
+        /// <param name="code">Code</param>
+        /// <returns></returns>
+        [HttpPost("confirm_consumer_code/{consumer_id}/{code}")]
+        public async Task<ActionResult<Consumer>> ConfirmConsumer(int consumer_id, string code)
+        {
+            var consumer = await _context.Consumer
+                .Include(w => w.ConsumerAddress)
+                    .ThenInclude(w => w.City)
+                .Where(w => w.Id == consumer_id)
+                .FirstOrDefaultAsync();
+
+            if(consumer == null)
+            {
+                return NotFound();
+            }
+
+            if(consumer.Code == code)
+            {
+                return consumer;
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         /// <summary>

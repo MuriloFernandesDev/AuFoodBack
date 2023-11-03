@@ -15,7 +15,12 @@ namespace AuFood.Models
 
         public string Phone { get; set; }
 
+        public bool PhoneConfirmed { get; set; }
+
         public string Name { get; set; }
+
+        [JsonIgnore]
+        public string? Code { get; set; }
 
         public string? Email {get; set;}
 
