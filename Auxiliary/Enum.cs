@@ -10,4 +10,19 @@
         Friday = 5,
         Saturday = 6
     }
+
+    public enum PaymentMethod
+    {
+        CreditCard = 0,
+        DebitCard = 1,
+        Cash = 2,
+        Pix = 3,
+        Voucher = 4
+    }
+
+    public enum DeliveryMethod
+    {
+        Pickup = 0,
+        Delivery = 1
+    }
 }

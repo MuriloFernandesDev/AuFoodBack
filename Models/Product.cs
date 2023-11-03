@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace AuFood.Models
 {
@@ -8,6 +9,7 @@ namespace AuFood.Models
         public Product()
         {
             ProductsPrice = new HashSet<ProductPrice>();
+            CartProduct = new HashSet<CartProduct>();
         }
         
         public int Id { get; set; }
@@ -33,5 +35,8 @@ namespace AuFood.Models
         public virtual ProductCategory? ProductCategory { get; set; }
 
         public virtual ICollection<ProductPrice>? ProductsPrice { get; set; }
+
+        [JsonIgnore]
+        public virtual ICollection<CartProduct>? CartProduct { get; set; }
     }
 }

@@ -1,0 +1,36 @@
+﻿using Newtonsoft.Json;
+
+namespace AuFood.Models
+{
+    public partial class ConsumerAddress
+    {
+        public ConsumerAddress()
+        {
+            Cart = new HashSet<Cart>();
+        }
+        
+        public int Id { get; set; }
+
+        public string? Street { get; set; }
+
+        public string? Number { get; set; }
+
+        public string? Neighborhood { get; set; }
+
+        public string? Complement { get; set; }
+        
+        public int? ZipCode { get; set; }
+
+        
+        public int CityId { get; set; }
+
+        public int ConsumerId { get; set; }
+
+        public virtual City? City { get; set; }
+
+        [JsonIgnore]
+        public virtual Consumer? Consumer { get; set; }
+
+        public ICollection<Cart> Cart { get; set; }
+    }
+}

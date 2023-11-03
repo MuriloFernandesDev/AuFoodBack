@@ -3,6 +3,7 @@ using System;
 using AuFood.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuFood.Migrations
 {
     [DbContext(typeof(_DbContext))]
-    partial class _DbContextModelSnapshot : ModelSnapshot
+    [Migration("20231103135638_NewTbCart")]
+    partial class NewTbCart
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -280,21 +283,6 @@ namespace AuFood.Migrations
                     b.HasIndex("ConsumerId");
 
                     b.ToTable("ConsumerAddress");
-                });
-
-            modelBuilder.Entity("AuFood.Models.ConsumerStore", b =>
-                {
-                    b.Property<int>("StoreId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ConsumerId")
-                        .HasColumnType("int");
-
-                    b.HasKey("StoreId", "ConsumerId");
-
-                    b.HasIndex("ConsumerId");
-
-                    b.ToTable("ConsumerStore");
                 });
 
             modelBuilder.Entity("AuFood.Models.Product", b =>
@@ -651,25 +639,6 @@ namespace AuFood.Migrations
                     b.Navigation("Consumer");
                 });
 
-            modelBuilder.Entity("AuFood.Models.ConsumerStore", b =>
-                {
-                    b.HasOne("AuFood.Models.Consumer", "Consumer")
-                        .WithMany("ConsumerStore")
-                        .HasForeignKey("ConsumerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AuFood.Models.Store", "Store")
-                        .WithMany("ConsumerStore")
-                        .HasForeignKey("StoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Consumer");
-
-                    b.Navigation("Store");
-                });
-
             modelBuilder.Entity("AuFood.Models.Product", b =>
                 {
                     b.HasOne("AuFood.Models.Client", "Client")
@@ -758,8 +727,6 @@ namespace AuFood.Migrations
                     b.Navigation("Cart");
 
                     b.Navigation("ConsumerAddress");
-
-                    b.Navigation("ConsumerStore");
                 });
 
             modelBuilder.Entity("AuFood.Models.ConsumerAddress", b =>
@@ -789,8 +756,6 @@ namespace AuFood.Migrations
                     b.Navigation("AvaliationsStories");
 
                     b.Navigation("Cart");
-
-                    b.Navigation("ConsumerStore");
 
                     b.Navigation("StoreCategoryStores");
                 });

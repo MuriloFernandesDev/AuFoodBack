@@ -1,7 +1,6 @@
 ﻿using AuFood.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
 namespace AuFood.Controllers
 {

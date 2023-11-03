@@ -2,6 +2,14 @@
 {
     public partial class Store
     {
+        public Store()
+        {
+            AvaliationsStories = new HashSet<AvaliationStore>();
+            Cart = new HashSet<Cart>();
+            StoreCategoryStores = new HashSet<StoreCategoryMapping>();
+            ConsumerStore = new HashSet<ConsumerStore>();
+        }
+        
         public int Id { get; set; }
 
         public string Name { get; set; }
@@ -22,7 +30,7 @@
         
         public string Address { get; set; }
 
-        public int Cep { get; set; }
+        public int ZipCode { get; set; }
 
         public string Cnpj { get; set; }
 
@@ -47,5 +55,8 @@
         public ICollection<StoreCategoryMapping> StoreCategoryStores { get; set; }
         
         public ICollection<AvaliationStore> AvaliationsStories { get; set; }
+        public ICollection<Cart> Cart { get; set; }
+
+        public ICollection<ConsumerStore> ConsumerStore { get; set; } = null!;
     }
 }

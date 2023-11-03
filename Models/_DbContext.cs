@@ -20,12 +20,20 @@ namespace AuFood.Models
         public DbSet<Store> Store { get; set; }
         
         public DbSet<StoreCategory> StoreCategory { get; set; }
+        
         public DbSet<StoreCategoryMapping> StoreCategoryMapping { get; set; }
 
         public DbSet<City> City { get; set; }
 
         public DbSet<State> State { get; set; }
+        
         public DbSet<AvaliationStore> AvaliationStore { get; set; }
+        
+        public DbSet<Consumer> Consumer { get; set; }
+        
+        public DbSet<ConsumerAddress> ConsumerAddress { get; set; }
+        public DbSet<ConsumerStore> ConsumerStore { get; set; }
+        public DbSet<CartProduct> CartProduct { get; set; }
         
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -203,7 +211,7 @@ namespace AuFood.Models
                 entity.Property(e => e.NumberAddress)
                     .HasMaxLength(8);
 
-                entity.Property(e => e.Cep)
+                entity.Property(e => e.ZipCode)
                     .HasColumnType("int(8)");
 
                 entity.Property(e => e.Cnpj)
@@ -324,6 +332,99 @@ namespace AuFood.Models
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_State_City");
             });
+
+            modelBuilder.Entity<Consumer>(entity =>
+            {
+                entity.HasKey(e => e.Id)
+                    .HasName("PRIMARY");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.Phone)
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.Email)
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.Password)
+                    .HasMaxLength(128)
+                    .IsFixedLength();
+            });
+
+            modelBuilder.Entity<ConsumerAddress>(entity =>
+            {
+                entity.HasKey(e => e.Id)
+                    .HasName("PRIMARY");
+
+                entity.Property(e => e.Street)
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.Number)
+                    .HasMaxLength(8);
+
+                entity.Property(e => e.Complement)
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.ZipCode)
+                    .HasColumnType("int(8)");
+
+                entity.Property(e => e.Neighborhood)
+                    .HasMaxLength(30);
+
+                entity.HasOne(e => e.Consumer)
+                    .WithMany(e => e.ConsumerAddress)
+                    .HasForeignKey(e => e.ConsumerId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_Consumer_ConsumerAddress");
+                
+                entity.HasOne(e => e.City)
+                    .WithMany(e => e.ConsumerAddress)
+                    .HasForeignKey(e => e.CityId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_Consumer_City");
+            });
+
+            modelBuilder.Entity<Cart>(entity =>
+            {
+                entity.HasKey(e => e.Id)
+                    .HasName("PRIMARY");
+
+                entity.Property(e => e.TotalPrice)
+                    .HasColumnType("double(2,2)");
+
+                entity.Property(e => e.Date)
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.PaymentMethod)
+                    .HasColumnType("int(2)"); 
+                
+                entity.Property(e => e.DeliveryMethod)
+                    .HasColumnType("int(2)");
+
+                entity.HasOne(e => e.Consumer)
+                    .WithMany(e => e.Cart)
+                    .HasForeignKey(e => e.ConsumerId)
+                    .HasConstraintName("FK_Cart_Consumer");
+
+                entity.HasOne(e => e.Store)
+                    .WithMany(e => e.Cart)
+                    .HasForeignKey(e => e.StoreId)
+                    .HasConstraintName("FK_Cart_Store");
+
+                entity.HasOne(e => e.ConsumerAddress)
+                    .WithMany(e => e.Cart)
+                    .HasForeignKey(e => e.ConsumerAddressId)
+                    .HasConstraintName("FK_Cart_ConsumerAdress");
+            });
+
+            //https://www.macoratti.net/19/09/efcore_mmr2.htm
+            //exemplo de como inserir dados
+            modelBuilder.Entity<CartProduct>()
+                 .HasKey(x => new { x.ProductId, x.CartId }); 
+            
+            modelBuilder.Entity<ConsumerStore>()
+                 .HasKey(x => new { x.StoreId, x.ConsumerId });
 
             OnModelCreatingPartial(modelBuilder);
         }
