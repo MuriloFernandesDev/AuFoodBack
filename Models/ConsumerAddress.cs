@@ -28,9 +28,12 @@ namespace AuFood.Models
 
         public virtual City? City { get; set; }
 
-        [JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public virtual Consumer? Consumer { get; set; }
 
+        [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public ICollection<Cart> Cart { get; set; }
     }
 }

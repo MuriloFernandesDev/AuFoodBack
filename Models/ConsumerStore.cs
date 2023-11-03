@@ -1,4 +1,6 @@
-﻿namespace AuFood.Models
+﻿using Newtonsoft.Json;
+
+namespace AuFood.Models
 {
     public partial class ConsumerStore
     {
@@ -6,6 +8,7 @@
         public int ConsumerId { get; set; }
 
         public Consumer Consumer { get; set; } = null!;
+
         public Store Store { get; set; } = null!;
     }
 }

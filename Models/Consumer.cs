@@ -23,7 +23,11 @@ namespace AuFood.Models
         public byte[]? Password { get; set; } = null!;
 
         public ICollection<ConsumerAddress> ConsumerAddress { get; set; }
+
         public ICollection<Cart> Cart { get; set; }
+
+        [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public ICollection<ConsumerStore> ConsumerStore { get; set; }
     }
 }

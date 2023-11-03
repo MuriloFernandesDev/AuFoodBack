@@ -18,7 +18,11 @@ namespace AuFood.Controllers
         {
             _context = context;
         }
-        
+
+        /// <summary>
+        /// Create new Product Category
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ProductCategory> Post(ProductCategory productCategory)
         {
@@ -29,6 +33,11 @@ namespace AuFood.Controllers
             return productCategory;
         }
 
+        /// <summary>
+        /// Get list all Product Category
+        /// </summary>
+        /// <param name="store_id">ID for Store</param>
+        /// <returns></returns>
         [HttpGet("list_categories_store/{store_id}")]
         public async Task<List<ProductCategory>> Post(int store_id)
         {

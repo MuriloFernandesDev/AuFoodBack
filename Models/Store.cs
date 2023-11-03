@@ -1,4 +1,6 @@
-﻿namespace AuFood.Models
+﻿using Newtonsoft.Json;
+
+namespace AuFood.Models
 {
     public partial class Store
     {
@@ -46,8 +48,6 @@
 
         public string ColorBackground { get; set; }
 
-        //public double TimeDelivery { get; set; }
-
         public int CityId { get; set; }
 
         public virtual City? City { get; set; }
@@ -57,6 +57,8 @@
         public ICollection<AvaliationStore> AvaliationsStories { get; set; }
         public ICollection<Cart> Cart { get; set; }
 
+        [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public ICollection<ConsumerStore> ConsumerStore { get; set; } = null!;
     }
 }
