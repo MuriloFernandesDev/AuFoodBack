@@ -427,9 +427,14 @@ namespace AuFood.Models
 
             //https://www.macoratti.net/19/09/efcore_mmr2.htm
             //exemplo de como inserir dados
+
             modelBuilder.Entity<CartProduct>()
-                 .HasKey(x => new { x.ProductId, x.CartId }); 
-            
+             .HasKey(x => new { x.ProductId, x.CartId });
+
+            modelBuilder.Entity<CartProduct>()
+                .Property(x => x.Quantity)
+                .IsRequired();
+
             modelBuilder.Entity<ConsumerStore>()
                  .HasKey(x => new { x.StoreId, x.ConsumerId });
 

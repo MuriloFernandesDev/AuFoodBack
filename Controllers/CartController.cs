@@ -83,26 +83,44 @@ namespace AuFood.Controllers
             newCart.TotalPrice = 0;
 
             _context.Cart.Add(newCart);
+            await _context.SaveChangesAsync();
 
-            foreach(var product in cart.products)
+            var cartProductsToAdd = new List<CartProduct>();
+
+            foreach (var product in cart.products)
             {
                 var ProductDB = await _context.Product
                     .Include(w => w.ProductsPrice)
                     .Where(w => w.Id == product.id)
                     .FirstOrDefaultAsync();
 
+                var CartProductExisting = cartProductsToAdd
+                    .FirstOrDefault(w => w.ProductId == product.id && w.CartId == newCart.Id);
+
+                if(CartProductExisting != null)
+                {
+                    CartProductExisting.Quantity += 1;
+                }
+                else
+                {
+                    var cartProduct = new CartProduct
+                    {
+                        CartId = newCart.Id,
+                        ProductId = ProductDB.Id,
+                        Quantity = 1
+                    };
+
+                    cartProductsToAdd.Add(cartProduct);
+                }
+
+                // Atualize o preço total do carrinho aqui, se necessário
                 newCart.TotalPrice += ProductDB.ProductsPrice
                     .Where(w => w.DayWeek == DateTime.Now.DayOfWeek)
                     .Select(w => w.Price)
                     .FirstOrDefault();
-
-                _context.CartProduct.Add(new CartProduct
-                {
-                    Cart = newCart,
-                    Product = ProductDB
-                });
             }
 
+            _context.CartProduct.AddRange(cartProductsToAdd);
             await _context.SaveChangesAsync();
 
             return newCart;

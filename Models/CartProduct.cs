@@ -4,6 +4,8 @@ namespace AuFood.Models
 {
     public partial class CartProduct
     {
+        public int Quantity { get; set; }
+
         public int CartId { get; set; }
         public int ProductId { get; set; }
 
