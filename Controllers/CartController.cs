@@ -127,8 +127,8 @@ namespace AuFood.Controllers
                 ProductId = w.id,
                 Quantity = w.quantity
             }).ToList());
+            
             await _context.SaveChangesAsync();
-
             return newCart;
         }
     }

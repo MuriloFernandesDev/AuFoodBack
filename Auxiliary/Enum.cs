@@ -13,16 +13,16 @@
 
     public enum PaymentMethod
     {
-        CreditCard = 0,
-        DebitCard = 1,
-        Cash = 2,
-        Pix = 3,
-        Voucher = 4
+        CreditCard = 1,
+        DebitCard = 2,
+        Cash = 3,
+        Pix = 4,
+        Voucher = 5
     }
 
     public enum DeliveryMethod
     {
-        Pickup = 0,
-        Delivery = 1
+        Pickup = 1,
+        Delivery = 2
     }
 }
