@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace AuFood.Auxiliary
 {
@@ -21,6 +23,26 @@ namespace AuFood.Auxiliary
                     }
                 }
             }
+        }
+
+        public static string CripterString(string pSenha)
+        {
+            string vSenhaCript = "";
+            using (SHA512 sha512Hash = SHA512.Create())
+            {
+                //From String to byte array
+                byte[] sourceBytes = Encoding.UTF8.GetBytes(pSenha);
+                byte[] hashBytes = sha512Hash.ComputeHash(sourceBytes);
+                string hash = BitConverter.ToString(hashBytes).Replace("-", String.Empty);
+
+                vSenhaCript = hash.ToLower();
+            }
+            return vSenhaCript;
+        }
+
+        public static byte[] CripterByte(string pSenha)
+        {
+            return Encoding.ASCII.GetBytes(CripterString(pSenha));
         }
     }
 }

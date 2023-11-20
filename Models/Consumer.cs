@@ -7,7 +7,7 @@ namespace AuFood.Models
         public Consumer()
         {
             ConsumerAddress = new HashSet<ConsumerAddress>();
-            Cart = new HashSet<Cart>();
+            Order = new HashSet<Order>();
             ConsumerStore = new HashSet<ConsumerStore>();
         }
         
@@ -31,7 +31,7 @@ namespace AuFood.Models
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
-        public ICollection<Cart> Cart { get; set; }
+        public ICollection<Order> Order { get; set; }
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]

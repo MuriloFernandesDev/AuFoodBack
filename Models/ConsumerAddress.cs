@@ -6,7 +6,7 @@ namespace AuFood.Models
     {
         public ConsumerAddress()
         {
-            Cart = new HashSet<Cart>();
+            Order = new HashSet<Order>();
         }
         
         public int Id { get; set; }
@@ -33,6 +33,6 @@ namespace AuFood.Models
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
-        public ICollection<Cart> Cart { get; set; }
+        public ICollection<Order> Order { get; set; }
     }
 }

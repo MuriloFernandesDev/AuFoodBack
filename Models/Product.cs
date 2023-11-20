@@ -9,7 +9,7 @@ namespace AuFood.Models
         public Product()
         {
             ProductsPrice = new HashSet<ProductPrice>();
-            CartProduct = new HashSet<CartProduct>();
+            OrderProduct = new HashSet<OrderProduct>();
         }
         
         public int Id { get; set; }
@@ -38,6 +38,6 @@ namespace AuFood.Models
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
-        public virtual ICollection<CartProduct>? CartProduct { get; set; }
+        public virtual ICollection<OrderProduct>? OrderProduct { get; set; }
     }
 }

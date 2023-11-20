@@ -2,16 +2,16 @@
 
 namespace AuFood.Models
 {
-    public partial class CartProduct
+    public partial class OrderProduct
     {
         public int Quantity { get; set; }
 
-        public int CartId { get; set; }
+        public int OrderId { get; set; }
         public int ProductId { get; set; }
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
-        public Cart Cart { get; set; } = null!;
+        public Order Order { get; set; } = null!;
         public Product Product { get; set; } = null!;
     }
 }

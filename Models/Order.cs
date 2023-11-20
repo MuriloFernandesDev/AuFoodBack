@@ -2,11 +2,11 @@
 
 namespace AuFood.Models
 {
-    public partial class Cart
+    public partial class Order
     {
-        public Cart()
+        public Order()
         {
-            CartProduct = new HashSet<CartProduct>();
+            OrderProduct = new HashSet<OrderProduct>();
         }
 
         public int Id { get; set; }
@@ -31,6 +31,6 @@ namespace AuFood.Models
 
         public virtual Store? Store { get; set; }
         
-        public ICollection<CartProduct> CartProduct { get; set; }
+        public ICollection<OrderProduct> OrderProduct { get; set; }
     }
 }

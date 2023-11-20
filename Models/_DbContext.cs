@@ -32,9 +32,14 @@ namespace AuFood.Models
         public DbSet<Consumer> Consumer { get; set; }
         
         public DbSet<ConsumerAddress> ConsumerAddress { get; set; }
+        
         public DbSet<ConsumerStore> ConsumerStore { get; set; }
-        public DbSet<CartProduct> CartProduct { get; set; }
-        public DbSet<Cart> Cart { get; set; }
+        
+        public DbSet<Client_ClientLogin> Client_ClientLogin { get; set; }
+        
+        public DbSet<OrderProduct> OrderProduct { get; set; }
+
+        public DbSet<Order> Order { get; set; }
         
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -139,6 +144,9 @@ namespace AuFood.Models
                 entity.Property(e => e.Name)
                     .HasMaxLength(30);
 
+                entity.Property(e => e.Created)
+                    .HasColumnType("datetime");
+
                 entity.Property(e => e.Phone)
                     .HasMaxLength(30);
 
@@ -161,6 +169,9 @@ namespace AuFood.Models
                 entity.Property(e => e.Name)
                     .HasMaxLength(30);
 
+                entity.Property(e => e.Created)
+                    .HasColumnType("datetime");
+
                 entity.Property(e => e.Phone)
                     .HasMaxLength(30);
 
@@ -168,20 +179,17 @@ namespace AuFood.Models
                     .HasMaxLength(30);
 
                 entity.Property(e => e.Password)
-                    .HasColumnType("text");
+                    .HasColumnType("binary(128)");
 
                 entity.Property(e => e.Photo)
                     .HasColumnType("text");
 
                 entity.Property(e => e.Profile)
                     .HasMaxLength(30);
-
-                entity.Property(e => e.ListClient)
-                    .HasColumnType("text");
-
+                
                 entity.HasOne(e => e.Client)
                     .WithMany(e => e.ClientsLogin)
-                    .HasForeignKey(e => e.IdClient)
+                    .HasForeignKey(e => e.ClientId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_ClientLogin_Client");
             });
@@ -392,7 +400,7 @@ namespace AuFood.Models
                     .HasConstraintName("FK_Consumer_City");
             });
 
-            modelBuilder.Entity<Cart>(entity =>
+            modelBuilder.Entity<Order>(entity =>
             {
                 entity.HasKey(e => e.Id)
                     .HasName("PRIMARY");
@@ -410,33 +418,36 @@ namespace AuFood.Models
                     .HasColumnType("int(2)");
 
                 entity.HasOne(e => e.Consumer)
-                    .WithMany(e => e.Cart)
+                    .WithMany(e => e.Order)
                     .HasForeignKey(e => e.ConsumerId)
-                    .HasConstraintName("FK_Cart_Consumer");
+                    .HasConstraintName("FK_Order_Consumer");
 
                 entity.HasOne(e => e.Store)
-                    .WithMany(e => e.Cart)
+                    .WithMany(e => e.Order)
                     .HasForeignKey(e => e.StoreId)
-                    .HasConstraintName("FK_Cart_Store");
+                    .HasConstraintName("FK_Order_Store");
 
                 entity.HasOne(e => e.ConsumerAddress)
-                    .WithMany(e => e.Cart)
+                    .WithMany(e => e.Order)
                     .HasForeignKey(e => e.ConsumerAddressId)
-                    .HasConstraintName("FK_Cart_ConsumerAdress");
+                    .HasConstraintName("FK_Order_ConsumerAdress");
             });
 
             //https://www.macoratti.net/19/09/efcore_mmr2.htm
             //exemplo de como inserir dados
 
-            modelBuilder.Entity<CartProduct>()
-             .HasKey(x => new { x.ProductId, x.CartId });
+            modelBuilder.Entity<OrderProduct>()
+             .HasKey(x => new { x.ProductId, x.OrderId });
 
-            modelBuilder.Entity<CartProduct>()
+            modelBuilder.Entity<OrderProduct>()
                 .Property(x => x.Quantity)
                 .IsRequired();
 
             modelBuilder.Entity<ConsumerStore>()
                  .HasKey(x => new { x.StoreId, x.ConsumerId });
+
+            modelBuilder.Entity<Client_ClientLogin>()
+                 .HasKey(x => new { x.ClientId, x.ClientLoginId });
 
             OnModelCreatingPartial(modelBuilder);
         }

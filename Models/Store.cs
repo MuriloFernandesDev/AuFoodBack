@@ -7,7 +7,7 @@ namespace AuFood.Models
         public Store()
         {
             AvaliationsStories = new HashSet<AvaliationStore>();
-            Cart = new HashSet<Cart>();
+            Order = new HashSet<Order>();
             StoreCategoryStores = new HashSet<StoreCategoryMapping>();
             ConsumerStore = new HashSet<ConsumerStore>();
         }
@@ -58,7 +58,7 @@ namespace AuFood.Models
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
-        public ICollection<Cart> Cart { get; set; }
+        public ICollection<Order> Order { get; set; }
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]

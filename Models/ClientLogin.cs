@@ -1,9 +1,15 @@
 ﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AuFood.Models
 {
     public partial class ClientLogin
     {
+        public ClientLogin()
+        {
+            Client_ClientLogin = new HashSet<Client_ClientLogin>();
+        }
+        
         public int Id { get; set; }
 
         /// <summary>
@@ -28,6 +34,14 @@ namespace AuFood.Models
         public byte[]? Password { get; set; } = null!;
 
         /// <summary>
+        /// Password of Client Ex: 123456
+        /// </summary>
+        [NotMapped]
+        public string? Pass { get; set; } = null!;
+
+        public DateTime? Created { get; set; }
+
+        /// <summary>
         /// Photo of Client Ex: https://www.google.com.br/photo.jpg
         /// </summary>
         public string Photo { get; set; }
@@ -37,18 +51,25 @@ namespace AuFood.Models
         /// </summary>
         public string Profile { get; set; } = "Client";
 
-        /// <summary>
-        /// ID of Client's List Ex: 1,2,3,4,5
-        /// </summary>
-        public string ListClient { get; set; }
+        [NotMapped]
+        public List<int> ListClientsId { get; set; }
+
+        [NotMapped]
+        public List<Client>? ListClients { get; set; }
 
         /// <summary>
         /// ID of Client Ex: 1
         /// </summary>
-        public int IdClient { get; set; }
+        public int ClientId { get; set; }
+
+
+        [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+        public ICollection<Client_ClientLogin> Client_ClientLogin { get; set; }
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
         public virtual Client? Client { get; set; }
+
     }
 }

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuFood.Migrations
 {
     [DbContext(typeof(_DbContext))]
-    [Migration("20231103135638_NewTbCart")]
-    partial class NewTbCart
+    [Migration("20231117143457_ChangePassClientLogin")]
+    partial class ChangePassClientLogin
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,60 +48,6 @@ namespace AuFood.Migrations
                     b.HasIndex("StoreId");
 
                     b.ToTable("AvaliationStore");
-                });
-
-            modelBuilder.Entity("AuFood.Models.Cart", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("ConsumerAddressId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ConsumerId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime");
-
-                    b.Property<int>("DeliveryMethod")
-                        .HasColumnType("int(2)");
-
-                    b.Property<int>("PaymentMethod")
-                        .HasColumnType("int(2)");
-
-                    b.Property<int>("StoreId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("TotalPrice")
-                        .HasColumnType("double(2,2)");
-
-                    b.HasKey("Id")
-                        .HasName("PRIMARY");
-
-                    b.HasIndex("ConsumerAddressId");
-
-                    b.HasIndex("ConsumerId");
-
-                    b.HasIndex("StoreId");
-
-                    b.ToTable("Cart");
-                });
-
-            modelBuilder.Entity("AuFood.Models.CartProduct", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CartId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProductId", "CartId");
-
-                    b.HasIndex("CartId");
-
-                    b.ToTable("CartProduct");
                 });
 
             modelBuilder.Entity("AuFood.Models.City", b =>
@@ -171,25 +117,21 @@ namespace AuFood.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
-
-                    b.Property<int>("IdClient")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ListClient")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
 
-                    b.Property<string>("Password")
-                        .HasColumnType("text");
+                    b.Property<byte[]>("Password")
+                        .HasColumnType("binary(128)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -208,9 +150,24 @@ namespace AuFood.Migrations
                     b.HasKey("Id")
                         .HasName("PRIMARY");
 
-                    b.HasIndex("IdClient");
+                    b.HasIndex("ClientId");
 
                     b.ToTable("ClientLogin");
+                });
+
+            modelBuilder.Entity("AuFood.Models.Client_ClientLogin", b =>
+                {
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ClientLoginId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ClientId", "ClientLoginId");
+
+                    b.HasIndex("ClientLoginId");
+
+                    b.ToTable("Client_ClientLogin");
                 });
 
             modelBuilder.Entity("AuFood.Models.Consumer", b =>
@@ -218,6 +175,10 @@ namespace AuFood.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(4)
+                        .HasColumnType("varchar(4)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(30)
@@ -237,6 +198,9 @@ namespace AuFood.Migrations
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
+
+                    b.Property<ulong>("PhoneConfirmed")
+                        .HasColumnType("bit(1)");
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");
@@ -283,6 +247,78 @@ namespace AuFood.Migrations
                     b.HasIndex("ConsumerId");
 
                     b.ToTable("ConsumerAddress");
+                });
+
+            modelBuilder.Entity("AuFood.Models.ConsumerStore", b =>
+                {
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ConsumerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("StoreId", "ConsumerId");
+
+                    b.HasIndex("ConsumerId");
+
+                    b.ToTable("ConsumerStore");
+                });
+
+            modelBuilder.Entity("AuFood.Models.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("ConsumerAddressId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ConsumerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime");
+
+                    b.Property<int>("DeliveryMethod")
+                        .HasColumnType("int(2)");
+
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int(2)");
+
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("TotalPrice")
+                        .HasColumnType("double(2,2)");
+
+                    b.HasKey("Id")
+                        .HasName("PRIMARY");
+
+                    b.HasIndex("ConsumerAddressId");
+
+                    b.HasIndex("ConsumerId");
+
+                    b.HasIndex("StoreId");
+
+                    b.ToTable("Order");
+                });
+
+            modelBuilder.Entity("AuFood.Models.OrderProduct", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId", "OrderId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderProduct");
                 });
 
             modelBuilder.Entity("AuFood.Models.Product", b =>
@@ -545,55 +581,6 @@ namespace AuFood.Migrations
                     b.Navigation("Store");
                 });
 
-            modelBuilder.Entity("AuFood.Models.Cart", b =>
-                {
-                    b.HasOne("AuFood.Models.ConsumerAddress", "ConsumerAddress")
-                        .WithMany("Cart")
-                        .HasForeignKey("ConsumerAddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_Cart_ConsumerAdress");
-
-                    b.HasOne("AuFood.Models.Consumer", "Consumer")
-                        .WithMany("Cart")
-                        .HasForeignKey("ConsumerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_Cart_Consumer");
-
-                    b.HasOne("AuFood.Models.Store", "Store")
-                        .WithMany("Cart")
-                        .HasForeignKey("StoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_Cart_Store");
-
-                    b.Navigation("Consumer");
-
-                    b.Navigation("ConsumerAddress");
-
-                    b.Navigation("Store");
-                });
-
-            modelBuilder.Entity("AuFood.Models.CartProduct", b =>
-                {
-                    b.HasOne("AuFood.Models.Cart", "Cart")
-                        .WithMany("CartProduct")
-                        .HasForeignKey("CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AuFood.Models.Product", "Product")
-                        .WithMany("CartProduct")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cart");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("AuFood.Models.City", b =>
                 {
                     b.HasOne("AuFood.Models.State", "State")
@@ -610,12 +597,31 @@ namespace AuFood.Migrations
                 {
                     b.HasOne("AuFood.Models.Client", "Client")
                         .WithMany("ClientsLogin")
-                        .HasForeignKey("IdClient")
+                        .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_ClientLogin_Client");
 
                     b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("AuFood.Models.Client_ClientLogin", b =>
+                {
+                    b.HasOne("AuFood.Models.Client", "Client")
+                        .WithMany("Client_ClientLogin")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AuFood.Models.ClientLogin", "ClientLogin")
+                        .WithMany("Client_ClientLogin")
+                        .HasForeignKey("ClientLoginId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("ClientLogin");
                 });
 
             modelBuilder.Entity("AuFood.Models.ConsumerAddress", b =>
@@ -637,6 +643,74 @@ namespace AuFood.Migrations
                     b.Navigation("City");
 
                     b.Navigation("Consumer");
+                });
+
+            modelBuilder.Entity("AuFood.Models.ConsumerStore", b =>
+                {
+                    b.HasOne("AuFood.Models.Consumer", "Consumer")
+                        .WithMany("ConsumerStore")
+                        .HasForeignKey("ConsumerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AuFood.Models.Store", "Store")
+                        .WithMany("ConsumerStore")
+                        .HasForeignKey("StoreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Consumer");
+
+                    b.Navigation("Store");
+                });
+
+            modelBuilder.Entity("AuFood.Models.Order", b =>
+                {
+                    b.HasOne("AuFood.Models.ConsumerAddress", "ConsumerAddress")
+                        .WithMany("Order")
+                        .HasForeignKey("ConsumerAddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_Order_ConsumerAdress");
+
+                    b.HasOne("AuFood.Models.Consumer", "Consumer")
+                        .WithMany("Order")
+                        .HasForeignKey("ConsumerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_Order_Consumer");
+
+                    b.HasOne("AuFood.Models.Store", "Store")
+                        .WithMany("Order")
+                        .HasForeignKey("StoreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_Order_Store");
+
+                    b.Navigation("Consumer");
+
+                    b.Navigation("ConsumerAddress");
+
+                    b.Navigation("Store");
+                });
+
+            modelBuilder.Entity("AuFood.Models.OrderProduct", b =>
+                {
+                    b.HasOne("AuFood.Models.Order", "Order")
+                        .WithMany("OrderProduct")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AuFood.Models.Product", "Product")
+                        .WithMany("OrderProduct")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("AuFood.Models.Product", b =>
@@ -703,11 +777,6 @@ namespace AuFood.Migrations
                     b.Navigation("StoreCategory");
                 });
 
-            modelBuilder.Entity("AuFood.Models.Cart", b =>
-                {
-                    b.Navigation("CartProduct");
-                });
-
             modelBuilder.Entity("AuFood.Models.City", b =>
                 {
                     b.Navigation("ConsumerAddress");
@@ -717,26 +786,40 @@ namespace AuFood.Migrations
 
             modelBuilder.Entity("AuFood.Models.Client", b =>
                 {
+                    b.Navigation("Client_ClientLogin");
+
                     b.Navigation("ClientsLogin");
 
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("AuFood.Models.ClientLogin", b =>
+                {
+                    b.Navigation("Client_ClientLogin");
+                });
+
             modelBuilder.Entity("AuFood.Models.Consumer", b =>
                 {
-                    b.Navigation("Cart");
-
                     b.Navigation("ConsumerAddress");
+
+                    b.Navigation("ConsumerStore");
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("AuFood.Models.ConsumerAddress", b =>
                 {
-                    b.Navigation("Cart");
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("AuFood.Models.Order", b =>
+                {
+                    b.Navigation("OrderProduct");
                 });
 
             modelBuilder.Entity("AuFood.Models.Product", b =>
                 {
-                    b.Navigation("CartProduct");
+                    b.Navigation("OrderProduct");
 
                     b.Navigation("ProductsPrice");
                 });
@@ -755,7 +838,9 @@ namespace AuFood.Migrations
                 {
                     b.Navigation("AvaliationsStories");
 
-                    b.Navigation("Cart");
+                    b.Navigation("ConsumerStore");
+
+                    b.Navigation("Order");
 
                     b.Navigation("StoreCategoryStores");
                 });

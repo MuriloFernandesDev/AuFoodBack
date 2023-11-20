@@ -122,11 +122,11 @@ namespace AuFood.Controllers
         }
 
         /// <summary>
-        /// Method for get product's on cart store
+        /// Method for get product's on order store
         /// </summary>
         /// <param name="store_id">ID for Store</param>
         /// <returns></returns>
-        [HttpGet("list_product_cart/{store_id}")]
+        [HttpGet("list_product_order/{store_id}")]
         public async Task<IEnumerable<Product>> GetListProduct([FromQuery] ListInt pParams, int store_id)
         {
             var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, store_id);

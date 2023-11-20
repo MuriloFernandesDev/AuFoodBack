@@ -13,9 +13,9 @@ namespace AuFood.Controllers
         public int quantity { get; set; }
     }
 
-    public class NewCart
+    public class newOrder
     {
-        public Cart cart { get; set; }
+        public Order order { get; set; }
 
         public Consumer consumer { get; set; }
 
@@ -28,29 +28,29 @@ namespace AuFood.Controllers
     
     [Route("api/[controller]")]
     [ApiController]
-    public class CartController : ControllerBase
+    public class OrderController : ControllerBase
     {
         private readonly _DbContext _context;
 
-        public CartController(_DbContext context)
+        public OrderController(_DbContext context)
         {
             _context = context;
         }
 
         [HttpPost]
-        public async Task<ActionResult<Cart>> Post(NewCart cart)
+        public async Task<ActionResult<Order>> Post(newOrder order)
         {
             var ConsumerStore = await _context.ConsumerStore
-                .Where(w => w.ConsumerId == cart.consumer.Id && w.StoreId == cart.storeId)
+                .Where(w => w.ConsumerId == order.consumer.Id && w.StoreId == order.storeId)
                 .FirstOrDefaultAsync();
 
-            var Consumer = await _context.Consumer.FindAsync(cart.consumer.Id);
-            var ConsumerAddress = await _context.ConsumerAddress.FindAsync(cart.consumerAddress.Id);
-            var Store = await _context.Store.FindAsync(cart.storeId);
+            var Consumer = await _context.Consumer.FindAsync(order.consumer.Id);
+            var ConsumerAddress = await _context.ConsumerAddress.FindAsync(order.consumerAddress.Id);
+            var Store = await _context.Store.FindAsync(order.storeId);
 
             if (Consumer == null)
             {
-                var newConsumer = cart.consumer;
+                var newConsumer = order.consumer;
 
                 _context.Consumer.Add(newConsumer);
 
@@ -75,15 +75,15 @@ namespace AuFood.Controllers
                 _context.ConsumerAddress.Add(NewConsumerAddress);
             }
             
-            var newCart = cart.cart;
+            var newOrder = order.order;
 
-            newCart.ConsumerId = Consumer.Id;
-            newCart.ConsumerAddressId = ConsumerAddress.Id;
-            newCart.StoreId = Store.Id;
-            newCart.Date = DateTime.Now;
-            newCart.TotalPrice = 0;
+            newOrder.ConsumerId = Consumer.Id;
+            newOrder.ConsumerAddressId = ConsumerAddress.Id;
+            newOrder.StoreId = Store.Id;
+            newOrder.Date = DateTime.Now;
+            newOrder.TotalPrice = 0;
 
-            _context.Cart.Add(newCart);
+            _context.Order.Add(newOrder);
             await _context.SaveChangesAsync();
 
             //var cartProductsToAdd = new List<CartProduct>();
@@ -121,15 +121,15 @@ namespace AuFood.Controllers
             //        .FirstOrDefault();
             //}
 
-            _context.CartProduct.AddRange(cart.products.Select(w => new CartProduct
+            _context.OrderProduct.AddRange(order.products.Select(w => new OrderProduct
             {
-                CartId = newCart.Id,
+                OrderId = newOrder.Id,
                 ProductId = w.id,
                 Quantity = w.quantity
             }).ToList());
             
             await _context.SaveChangesAsync();
-            return newCart;
+            return newOrder;
         }
     }
 }
