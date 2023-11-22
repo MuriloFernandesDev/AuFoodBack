@@ -16,7 +16,7 @@ namespace AuFood.Controllers
         }
 
         [HttpGet("address_by_zip_code")]
-        public async Task<ZipCode> GetAddress(int zip_code)
+        public async Task<StoreAddress> GetAddress(int zip_code)
         {
             var Address = await new Connect().GetAddress(zip_code);
 
@@ -32,7 +32,7 @@ namespace AuFood.Controllers
                 State = state
             };
 
-            var zipCode = new ZipCode
+            var zipCode = new StoreAddress
             {
                 Zip = int.Parse(Address.cep),
                 Street = Address.logradouro,
@@ -42,7 +42,7 @@ namespace AuFood.Controllers
 
             await _context.State.AddAsync(state);
             await _context.City.AddAsync(city);
-            await _context.ZipCode.AddAsync(zipCode);
+            await _context.StoreAddress.AddAsync(zipCode);
 
             await _context.SaveChangesAsync();
 

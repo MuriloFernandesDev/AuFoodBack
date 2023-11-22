@@ -1,8 +1,8 @@
 ﻿namespace AuFood.Models
 {
-    public partial class ZipCode
+    public partial class StoreAddress
     {
-        public ZipCode() {
+        public StoreAddress() {
             Store = new HashSet<Store>();
         }
     

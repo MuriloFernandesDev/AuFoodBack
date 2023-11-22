@@ -23,9 +23,9 @@ namespace AuFood.Controllers
         }
 
         [HttpGet("address_by_zip_code")]
-        public async Task<ZipCode> GetAddress(int zip_code)
+        public async Task<StoreAddress> GetAddress(int zip_code)
         {
-            return new ZipCode();
+            return new StoreAddress();
         }
     }
 }

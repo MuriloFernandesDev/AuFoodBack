@@ -45,7 +45,7 @@ namespace AuFood.Controllers
         {
             //remover todo espaço de w.Name e name e colocar -
             var Store = await _context.Store
-                .Include(w => w.ZipCode)
+                .Include(w => w.StoreAddress)
                     .ThenInclude(w => w.City)
                     .ThenInclude(w => w.State)
                 .Where(w => w.Name.Replace(" ", "-").ToLower() == name.Replace(" ", "-").ToLower())
@@ -60,7 +60,7 @@ namespace AuFood.Controllers
             //remover todo espaço de w.Name e name e colocar -
             var Store = await _context.Store
                 .Include(w => w.AvaliationsStories)
-                .Include(w => w.ZipCode)
+                .Include(w => w.StoreAddress)
                     .ThenInclude(w => w.City)
                     .ThenInclude(w => w.State)
                 .ToListAsync();

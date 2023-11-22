@@ -26,7 +26,8 @@ namespace AuFood.Models
         public DbSet<City> City { get; set; }
 
         public DbSet<State> State { get; set; }
-        public DbSet<ZipCode> ZipCode { get; set; }
+        
+        public DbSet<StoreAddress> StoreAddress { get; set; }
         
         public DbSet<AvaliationStore> AvaliationStore { get; set; }
         
@@ -195,7 +196,7 @@ namespace AuFood.Models
                     .HasConstraintName("FK_ClientLogin_Client");
             });
 
-            modelBuilder.Entity<ZipCode>(entity =>
+            modelBuilder.Entity<StoreAddress>(entity =>
             {
                 entity.HasKey(e => e.Id)
                     .HasName("PRIMARY");
@@ -257,9 +258,9 @@ namespace AuFood.Models
                 //entity.Property(e => e.TimeDelivery)
                 //    .HasColumnType("double(2,2)");
 
-                entity.HasOne(e => e.ZipCode)
+                entity.HasOne(e => e.StoreAddress)
                     .WithMany(e => e.Store)
-                    .HasForeignKey(e => e.ZipCodeId)
+                    .HasForeignKey(e => e.StoreAddressId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Store_ZipCode");
 

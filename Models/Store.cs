@@ -46,9 +46,9 @@ namespace AuFood.Models
 
         public string ColorBackground { get; set; }
 
-        public int ZipCodeId { get; set; }
+        public int StoreAddressId { get; set; }
 
-        public virtual ZipCode ZipCode { get; set; }
+        public virtual StoreAddress StoreAddress { get; set; }
 
         public int ClientId { get; set; }
 

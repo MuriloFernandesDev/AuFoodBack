@@ -5,7 +5,7 @@
         public City() {
             Store = new HashSet<Store>();
             ConsumerAddress = new HashSet<ConsumerAddress>();
-            ZipCode = new HashSet<ZipCode>();
+            ZipCode = new HashSet<StoreAddress>();
         }
     
         public int Id { get; set; }
@@ -28,6 +28,6 @@
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
-        public ICollection<ZipCode> ZipCode { get; set; }
+        public ICollection<StoreAddress> ZipCode { get; set; }
     }
 }
