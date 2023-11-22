@@ -3,6 +3,7 @@ using System;
 using AuFood.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuFood.Migrations
 {
     [DbContext(typeof(_DbContext))]
-    partial class _DbContextModelSnapshot : ModelSnapshot
+    [Migration("20231122002236_NewTbZipCode")]
+    partial class NewTbZipCode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -453,9 +456,6 @@ namespace AuFood.Migrations
                     b.Property<int?>("CityId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ClientId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Cnpj")
                         .IsRequired()
                         .HasMaxLength(14)
@@ -524,8 +524,6 @@ namespace AuFood.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("CityId");
-
-                    b.HasIndex("ClientId");
 
                     b.HasIndex("ZipCodeId");
 
@@ -782,21 +780,12 @@ namespace AuFood.Migrations
                         .WithMany("Store")
                         .HasForeignKey("CityId");
 
-                    b.HasOne("AuFood.Models.Client", "Client")
-                        .WithMany("Store")
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_Store_Client");
-
                     b.HasOne("AuFood.Models.ZipCode", "ZipCode")
                         .WithMany("Store")
                         .HasForeignKey("ZipCodeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Store_ZipCode");
-
-                    b.Navigation("Client");
 
                     b.Navigation("ZipCode");
                 });
@@ -848,8 +837,6 @@ namespace AuFood.Migrations
                     b.Navigation("ClientsLogin");
 
                     b.Navigation("Products");
-
-                    b.Navigation("Store");
                 });
 
             modelBuilder.Entity("AuFood.Models.ClientLogin", b =>

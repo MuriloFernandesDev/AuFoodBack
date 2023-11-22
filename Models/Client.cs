@@ -8,6 +8,7 @@
             ClientsLogin = new HashSet<ClientLogin>();
             Products = new HashSet<Product>();
             Client_ClientLogin = new HashSet<Client_ClientLogin>();
+            Store = new HashSet<Store>();
         }
 
         ///<summary>
@@ -41,6 +42,10 @@
         public string? Logo { get; set; }
 
         public DateTime? Created { get; set; }
+
+        [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+        public virtual ICollection<Store> Store { get; set; }
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]

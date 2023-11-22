@@ -26,6 +26,7 @@ namespace AuFood.Models
         public DbSet<City> City { get; set; }
 
         public DbSet<State> State { get; set; }
+        public DbSet<ZipCode> ZipCode { get; set; }
         
         public DbSet<AvaliationStore> AvaliationStore { get; set; }
         
@@ -194,6 +195,27 @@ namespace AuFood.Models
                     .HasConstraintName("FK_ClientLogin_Client");
             });
 
+            modelBuilder.Entity<ZipCode>(entity =>
+            {
+                entity.HasKey(e => e.Id)
+                    .HasName("PRIMARY");
+
+                entity.Property(e => e.Street)
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Neighborhood)
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Zip)
+                    .HasColumnType("int(8)");
+
+                entity.HasOne(e => e.City)
+                    .WithMany(e => e.ZipCode)
+                    .HasForeignKey(e => e.CityId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_ZipCode_City");
+            });
+
             modelBuilder.Entity<Store>(entity =>
             {
                 entity.HasKey(e => e.Id)
@@ -210,18 +232,9 @@ namespace AuFood.Models
 
                 entity.Property(e => e.Email)
                     .HasMaxLength(30);
-
-                entity.Property(e => e.Street)
-                    .HasMaxLength(20);
-                
-                entity.Property(e => e.Address)
-                    .HasMaxLength(50);
                 
                 entity.Property(e => e.NumberAddress)
                     .HasMaxLength(8);
-
-                entity.Property(e => e.ZipCode)
-                    .HasColumnType("int(8)");
 
                 entity.Property(e => e.Cnpj)
                     .HasMaxLength(14);
@@ -244,11 +257,17 @@ namespace AuFood.Models
                 //entity.Property(e => e.TimeDelivery)
                 //    .HasColumnType("double(2,2)");
 
-                entity.HasOne(e => e.City)
-                    .WithMany(e => e.Stories)
-                    .HasForeignKey(e => e.CityId)
+                entity.HasOne(e => e.ZipCode)
+                    .WithMany(e => e.Store)
+                    .HasForeignKey(e => e.ZipCodeId)
                     .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_Store_City");
+                    .HasConstraintName("FK_Store_ZipCode");
+
+                entity.HasOne(e => e.Client)
+                    .WithMany(e => e.Store)
+                    .HasForeignKey(e => e.ClientId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_Store_Client");
             });
 
             modelBuilder.Entity<AvaliationStore>(entity =>

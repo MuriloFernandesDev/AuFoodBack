@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AuFood.Models
 {
@@ -26,13 +27,10 @@ namespace AuFood.Models
 
         public string Email { get; set; }
 
-        public string Street { get; set; }
-
         public string NumberAddress { get; set; }
-        
-        public string Address { get; set; }
 
-        public int ZipCode { get; set; }
+        [NotMapped]
+        public int Zip { get; set; }
 
         public string Cnpj { get; set; }
 
@@ -48,9 +46,13 @@ namespace AuFood.Models
 
         public string ColorBackground { get; set; }
 
-        public int CityId { get; set; }
+        public int ZipCodeId { get; set; }
 
-        public virtual City? City { get; set; }
+        public virtual ZipCode ZipCode { get; set; }
+
+        public int ClientId { get; set; }
+
+        public virtual Client Client { get; set; }
        
         public ICollection<StoreCategoryMapping> StoreCategoryStores { get; set; }
         

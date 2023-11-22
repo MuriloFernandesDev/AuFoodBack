@@ -23,7 +23,7 @@ namespace AuFood.Controllers
             _context = context;
         }
         
-        [HttpPost("add/store")]
+        [HttpPost]
         public async Task<Store> CreateStore(Store store)
         {
             _context.Store.Add(store);
@@ -32,7 +32,7 @@ namespace AuFood.Controllers
             return store;
         }
 
-        [HttpPost("add/storeCategory")]
+        [HttpPost("storeCategory")]
         public async Task<StoreCategory> CreateStoreCategory(StoreCategory storeCategory)
         {
             _context.StoreCategory.Add(storeCategory);
@@ -46,7 +46,8 @@ namespace AuFood.Controllers
         {
             //remover todo espaço de w.Name e name e colocar -
             var Store = await _context.Store
-                .Include(w => w.City)
+                .Include(w => w.ZipCode)
+                    .ThenInclude(w => w.City)
                     .ThenInclude(w => w.State)
                 .Where(w => w.Name.Replace(" ", "-").ToLower() == name.Replace(" ", "-").ToLower())
                 .SingleOrDefaultAsync();
@@ -60,7 +61,8 @@ namespace AuFood.Controllers
             //remover todo espaço de w.Name e name e colocar -
             var Store = await _context.Store
                 .Include(w => w.AvaliationsStories)
-                .Include(w => w.City)
+                .Include(w => w.ZipCode)
+                    .ThenInclude(w => w.City)
                     .ThenInclude(w => w.State)
                 .ToListAsync();
 
@@ -73,6 +75,15 @@ namespace AuFood.Controllers
             }).ToList();
 
             return StoreListAll;
+        }
+
+        [HttpGet("dash/list_all")]
+        public async Task<IEnumerable<Store>> ListAll()
+        {
+            var list_all = await _context.Store
+                .ToListAsync();
+
+            return list_all;
         }
 
         [HttpGet("avaliation/{id}")]

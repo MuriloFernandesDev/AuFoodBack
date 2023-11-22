@@ -3,8 +3,9 @@
     public partial class City
     {
         public City() {
-            Stories = new HashSet<Store>();
+            Store = new HashSet<Store>();
             ConsumerAddress = new HashSet<ConsumerAddress>();
+            ZipCode = new HashSet<ZipCode>();
         }
     
         public int Id { get; set; }
@@ -19,10 +20,14 @@
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
-        public ICollection<Store> Stories { get; set; }
+        public ICollection<Store> Store { get; set; }
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
         public ICollection<ConsumerAddress> ConsumerAddress { get; set; }
+
+        [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+        public ICollection<ZipCode> ZipCode { get; set; }
     }
 }
