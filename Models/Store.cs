@@ -9,7 +9,7 @@ namespace AuFood.Models
         {
             AvaliationsStories = new HashSet<AvaliationStore>();
             Order = new HashSet<Order>();
-            StoreCategoryStores = new HashSet<StoreCategoryMapping>();
+            StoreCategoryStore = new HashSet<StoreCategoryStore>();
             ConsumerStore = new HashSet<ConsumerStore>();
         }
         
@@ -54,7 +54,7 @@ namespace AuFood.Models
 
         public virtual Client Client { get; set; }
        
-        public ICollection<StoreCategoryMapping> StoreCategoryStores { get; set; }
+        public ICollection<StoreCategoryStore> StoreCategoryStore { get; set; }
         
         public ICollection<AvaliationStore> AvaliationsStories { get; set; }
 

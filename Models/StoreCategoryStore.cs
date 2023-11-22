@@ -1,6 +1,6 @@
 ﻿namespace AuFood.Models
 {
-    public partial class StoreCategoryMapping
+    public partial class StoreCategoryStore
     {
         public int? StoreId { get; set; }
         public int StoreCategoryId { get; set; }

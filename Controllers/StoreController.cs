@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuFood.Controllers
 {
-
     public class StoreListAll : Store
     {
         public string Rating { get; set; }

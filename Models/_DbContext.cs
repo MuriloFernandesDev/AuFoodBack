@@ -21,7 +21,7 @@ namespace AuFood.Models
         
         public DbSet<StoreCategory> StoreCategory { get; set; }
         
-        public DbSet<StoreCategoryMapping> StoreCategoryMapping { get; set; }
+        public DbSet<StoreCategoryStore> StoreCategoryStore { get; set; }
 
         public DbSet<City> City { get; set; }
 
@@ -300,17 +300,17 @@ namespace AuFood.Models
                     .HasMaxLength(30);
             });
 
-            modelBuilder.Entity<StoreCategoryMapping>()
+            modelBuilder.Entity<StoreCategoryStore>()
            .HasKey(scs => new { scs.StoreId, scs.StoreCategoryId });
 
-            modelBuilder.Entity<StoreCategoryMapping>()
+            modelBuilder.Entity<StoreCategoryStore>()
                 .HasOne(scs => scs.Store)
-                .WithMany(s => s.StoreCategoryStores)
+                .WithMany(s => s.StoreCategoryStore)
                 .HasForeignKey(scs => scs.StoreId);
 
-            modelBuilder.Entity<StoreCategoryMapping>()
+            modelBuilder.Entity<StoreCategoryStore>()
                 .HasOne(scs => scs.StoreCategory)
-                .WithMany(sc => sc.StoreCategoryStores)
+                .WithMany(sc => sc.StoreCategoryStore)
                 .HasForeignKey(scs => scs.StoreCategoryId);
 
             //Exemplo de uso das tabelas Store StoreCategory StoreCategoryStore

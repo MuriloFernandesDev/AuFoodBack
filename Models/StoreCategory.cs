@@ -8,6 +8,6 @@
 
         public string Icon { get; set; } = "fas fa-utensils";
         
-        public ICollection<StoreCategoryMapping>? StoreCategoryStores { get; set; }
+        public ICollection<StoreCategoryStore>? StoreCategoryStore { get; set; }
     }
 }
