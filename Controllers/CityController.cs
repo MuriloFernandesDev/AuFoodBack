@@ -21,11 +21,5 @@ namespace AuFood.Controllers
             await _context.SaveChangesAsync();
             return city;
         }
-
-        [HttpGet("address_by_zip_code")]
-        public async Task<StoreAddress> GetAddress(int zip_code)
-        {
-            return new StoreAddress();
-        }
     }
 }

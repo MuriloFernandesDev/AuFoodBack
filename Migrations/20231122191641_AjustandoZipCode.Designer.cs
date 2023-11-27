@@ -3,6 +3,7 @@ using System;
 using AuFood.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuFood.Migrations
 {
     [DbContext(typeof(_DbContext))]
-    partial class _DbContextModelSnapshot : ModelSnapshot
+    [Migration("20231122191641_AjustandoZipCode")]
+    partial class AjustandoZipCode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,6 +55,10 @@ namespace AuFood.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<string>("Abbreviation")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -446,7 +453,7 @@ namespace AuFood.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("CityId")
+                    b.Property<int?>("CityId")
                         .HasColumnType("int");
 
                     b.Property<int>("ClientId")
@@ -480,10 +487,12 @@ namespace AuFood.Migrations
                         .HasColumnType("varchar(30)");
 
                     b.Property<string>("FacebookUrl")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
                     b.Property<string>("InstagramUrl")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
@@ -496,31 +505,23 @@ namespace AuFood.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
 
-                    b.Property<string>("Neighborhood")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<string>("NumberAddress")
                         .IsRequired()
                         .HasMaxLength(8)
                         .HasColumnType("varchar(8)");
 
                     b.Property<string>("Phone")
+                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
 
-                    b.Property<string>("Street")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<int>("StoreAddressId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Whatsapp")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
-
-                    b.Property<string>("Zip")
-                        .IsRequired()
-                        .HasColumnType("longtext");
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");
@@ -529,7 +530,41 @@ namespace AuFood.Migrations
 
                     b.HasIndex("ClientId");
 
+                    b.HasIndex("StoreAddressId");
+
                     b.ToTable("Store");
+                });
+
+            modelBuilder.Entity("AuFood.Models.StoreAddress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Neighborhood")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Zip")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("varchar(8)");
+
+                    b.HasKey("Id")
+                        .HasName("PRIMARY");
+
+                    b.HasIndex("CityId");
+
+                    b.ToTable("StoreAddress");
                 });
 
             modelBuilder.Entity("AuFood.Models.StoreCategory", b =>
@@ -584,7 +619,7 @@ namespace AuFood.Migrations
             modelBuilder.Entity("AuFood.Models.City", b =>
                 {
                     b.HasOne("AuFood.Models.State", "State")
-                        .WithMany("City")
+                        .WithMany("Cities")
                         .HasForeignKey("StateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -748,12 +783,9 @@ namespace AuFood.Migrations
 
             modelBuilder.Entity("AuFood.Models.Store", b =>
                 {
-                    b.HasOne("AuFood.Models.City", "City")
+                    b.HasOne("AuFood.Models.City", null)
                         .WithMany("Store")
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_Store_City");
+                        .HasForeignKey("CityId");
 
                     b.HasOne("AuFood.Models.Client", "Client")
                         .WithMany("Store")
@@ -762,9 +794,28 @@ namespace AuFood.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Store_Client");
 
-                    b.Navigation("City");
+                    b.HasOne("AuFood.Models.StoreAddress", "StoreAddress")
+                        .WithMany("Store")
+                        .HasForeignKey("StoreAddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_Store_ZipCode");
 
                     b.Navigation("Client");
+
+                    b.Navigation("StoreAddress");
+                });
+
+            modelBuilder.Entity("AuFood.Models.StoreAddress", b =>
+                {
+                    b.HasOne("AuFood.Models.City", "City")
+                        .WithMany("ZipCode")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_ZipCode_City");
+
+                    b.Navigation("City");
                 });
 
             modelBuilder.Entity("AuFood.Models.StoreCategoryStore", b =>
@@ -791,6 +842,8 @@ namespace AuFood.Migrations
                     b.Navigation("ConsumerAddress");
 
                     b.Navigation("Store");
+
+                    b.Navigation("ZipCode");
                 });
 
             modelBuilder.Entity("AuFood.Models.Client", b =>
@@ -842,7 +895,7 @@ namespace AuFood.Migrations
 
             modelBuilder.Entity("AuFood.Models.State", b =>
                 {
-                    b.Navigation("City");
+                    b.Navigation("Cities");
                 });
 
             modelBuilder.Entity("AuFood.Models.Store", b =>
@@ -854,6 +907,11 @@ namespace AuFood.Migrations
                     b.Navigation("Order");
 
                     b.Navigation("StoreCategoryStore");
+                });
+
+            modelBuilder.Entity("AuFood.Models.StoreAddress", b =>
+                {
+                    b.Navigation("Store");
                 });
 
             modelBuilder.Entity("AuFood.Models.StoreCategory", b =>

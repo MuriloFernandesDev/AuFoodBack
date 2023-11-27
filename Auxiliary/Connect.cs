@@ -17,7 +17,7 @@ namespace AuFood.Auxiliary
     
     public class Connect
     {
-        public async Task<ViaCepResponse> GetAddress(int zip_code)
+        public async Task<ViaCepResponse> GetAddress(string zip_code)
         {
             var client = new HttpClient();
             

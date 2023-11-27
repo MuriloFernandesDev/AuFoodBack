@@ -23,20 +23,17 @@ namespace AuFood.Models
 
         public string Whatsapp { get; set; }
 
-        public string Phone { get; set; }
+        public string? Phone { get; set; }
 
         public string Email { get; set; }
 
         public string NumberAddress { get; set; }
 
-        [NotMapped]
-        public int Zip { get; set; }
-
         public string Cnpj { get; set; }
 
-        public string InstagramUrl { get; set; }
+        public string? InstagramUrl { get; set; }
 
-        public string FacebookUrl { get; set; }
+        public string? FacebookUrl { get; set; }
 
         public string BackgroundImage { get; set; }
 
@@ -46,14 +43,20 @@ namespace AuFood.Models
 
         public string ColorBackground { get; set; }
 
-        public int StoreAddressId { get; set; }
+        public string Zip { get; set; }
 
-        public virtual StoreAddress StoreAddress { get; set; }
+        public string Street { get; set; }
+
+        public string Neighborhood { get; set; }
+
+        public int CityId { get; set; }
+
+        public virtual City? City { get; set; }
 
         public int ClientId { get; set; }
 
-        public virtual Client Client { get; set; }
-       
+        public virtual Client? Client { get; set; }
+
         public ICollection<StoreCategoryStore> StoreCategoryStore { get; set; }
         
         public ICollection<AvaliationStore> AvaliationsStories { get; set; }

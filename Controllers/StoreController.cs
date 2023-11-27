@@ -45,8 +45,7 @@ namespace AuFood.Controllers
         {
             //remover todo espaço de w.Name e name e colocar -
             var Store = await _context.Store
-                .Include(w => w.StoreAddress)
-                    .ThenInclude(w => w.City)
+                .Include(w => w.City)
                     .ThenInclude(w => w.State)
                 .Where(w => w.Name.Replace(" ", "-").ToLower() == name.Replace(" ", "-").ToLower())
                 .SingleOrDefaultAsync();
@@ -60,8 +59,7 @@ namespace AuFood.Controllers
             //remover todo espaço de w.Name e name e colocar -
             var Store = await _context.Store
                 .Include(w => w.AvaliationsStories)
-                .Include(w => w.StoreAddress)
-                    .ThenInclude(w => w.City)
+                .Include(w => w.City)
                     .ThenInclude(w => w.State)
                 .ToListAsync();
 
@@ -83,6 +81,19 @@ namespace AuFood.Controllers
                 .ToListAsync();
 
             return list_all;
+        }
+
+        [HttpGet("dash/{store_id}")]
+        public async Task<Store> GetStoreByName(int store_id)
+        {
+            //remover todo espaço de w.Name e name e colocar -
+            var Store = await _context.Store
+                .Include(w => w.City)
+                    .ThenInclude(w => w.State)
+                .Where(w => w.Id == store_id)
+                .SingleOrDefaultAsync();
+
+            return Store;
         }
 
         [HttpGet("avaliation/{id}")]

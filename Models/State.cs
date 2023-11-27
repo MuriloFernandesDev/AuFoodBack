@@ -5,7 +5,7 @@
 
         public State()
         {
-            Cities = new HashSet<City>();
+            City = new HashSet<City>();
         }
         
         public int Id { get; set; }
@@ -16,6 +16,6 @@
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
-        public virtual ICollection<City> Cities { get; set; }
+        public virtual ICollection<City> City { get; set; }
     }
 }

@@ -8,7 +8,7 @@
     
         public int Id { get; set; }
         
-        public int Zip { get; set; }
+        public string Zip { get; set; }
 
         public string Street { get; set; }
 

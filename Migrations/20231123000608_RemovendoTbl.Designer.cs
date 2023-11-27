@@ -3,6 +3,7 @@ using System;
 using AuFood.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuFood.Migrations
 {
     [DbContext(typeof(_DbContext))]
-    partial class _DbContextModelSnapshot : ModelSnapshot
+    [Migration("20231123000608_RemovendoTbl")]
+    partial class RemovendoTbl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,6 +55,10 @@ namespace AuFood.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<string>("Abbreviation")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -480,6 +487,7 @@ namespace AuFood.Migrations
                         .HasColumnType("varchar(30)");
 
                     b.Property<string>("FacebookUrl")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
@@ -584,7 +592,7 @@ namespace AuFood.Migrations
             modelBuilder.Entity("AuFood.Models.City", b =>
                 {
                     b.HasOne("AuFood.Models.State", "State")
-                        .WithMany("City")
+                        .WithMany("Cities")
                         .HasForeignKey("StateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -842,7 +850,7 @@ namespace AuFood.Migrations
 
             modelBuilder.Entity("AuFood.Models.State", b =>
                 {
-                    b.Navigation("City");
+                    b.Navigation("Cities");
                 });
 
             modelBuilder.Entity("AuFood.Models.Store", b =>

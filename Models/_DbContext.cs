@@ -27,8 +27,6 @@ namespace AuFood.Models
 
         public DbSet<State> State { get; set; }
         
-        public DbSet<StoreAddress> StoreAddress { get; set; }
-        
         public DbSet<AvaliationStore> AvaliationStore { get; set; }
         
         public DbSet<Consumer> Consumer { get; set; }
@@ -196,27 +194,6 @@ namespace AuFood.Models
                     .HasConstraintName("FK_ClientLogin_Client");
             });
 
-            modelBuilder.Entity<StoreAddress>(entity =>
-            {
-                entity.HasKey(e => e.Id)
-                    .HasName("PRIMARY");
-
-                entity.Property(e => e.Street)
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Neighborhood)
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Zip)
-                    .HasColumnType("int(8)");
-
-                entity.HasOne(e => e.City)
-                    .WithMany(e => e.ZipCode)
-                    .HasForeignKey(e => e.CityId)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_ZipCode_City");
-            });
-
             modelBuilder.Entity<Store>(entity =>
             {
                 entity.HasKey(e => e.Id)
@@ -258,11 +235,11 @@ namespace AuFood.Models
                 //entity.Property(e => e.TimeDelivery)
                 //    .HasColumnType("double(2,2)");
 
-                entity.HasOne(e => e.StoreAddress)
-                    .WithMany(e => e.Store)
-                    .HasForeignKey(e => e.StoreAddressId)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_Store_ZipCode");
+                entity.HasOne(e => e.City)
+                   .WithMany(e => e.Store)
+                   .HasForeignKey(e => e.CityId)
+                   .OnDelete(DeleteBehavior.Cascade)
+                   .HasConstraintName("FK_Store_City");
 
                 entity.HasOne(e => e.Client)
                     .WithMany(e => e.Store)
@@ -356,7 +333,7 @@ namespace AuFood.Models
                     .HasMaxLength(30);
                 
                 entity.HasOne(e => e.State)
-                    .WithMany(e => e.Cities)
+                    .WithMany(e => e.City)
                     .HasForeignKey(e => e.StateId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_State_City");
