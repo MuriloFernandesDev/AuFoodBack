@@ -76,7 +76,7 @@ namespace AuFood.Models
                     .HasMaxLength(100);
 
                 entity.Property(e => e.TimeDelivery)
-                    .HasColumnType("double(2,2)");
+                    .HasColumnType("int(3)");
 
                 entity.Property(e => e.Image)
                     .HasColumnType("text");

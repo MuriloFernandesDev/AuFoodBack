@@ -44,7 +44,8 @@ namespace AuFood.Controllers
         {
             var client_update = await _context.ClientLogin
                 .Include(cl => cl.Client_ClientLogin)
-                .FirstOrDefaultAsync(cl => cl.Id == client_login_id);
+                .Where(cl => cl.Id == client_login_id)
+                .FirstOrDefaultAsync();
 
             if (client_update == null)
             {

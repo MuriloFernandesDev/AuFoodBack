@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AuFood.Models
 {
@@ -21,13 +22,16 @@ namespace AuFood.Models
         
         public int QtdPeopleServe { get; set; }
         
-        public double TimeDelivery { get; set; }
+        public int TimeDelivery { get; set; }
         
         public string Image { get; set; }
 
         public int ProductCategoryId { get; set; }
 
         public int ClientId { get; set; }
+
+        [NotMapped]
+        public List<int> ListStoreId { get; set; }
 
         public virtual Client? Client { get; set; }
 

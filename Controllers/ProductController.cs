@@ -182,11 +182,58 @@ namespace AuFood.Controllers
         [HttpPost]
         public async Task<Product> Post(Product product)
         {
-            await _context.Product.AddAsync(product);
+            product.ProductStore = product
+                .ListStoreId
+                .Select(w => new ProductStore
+                {
+                    Product = product,
+                    StoreId = w
+                })
+                .ToList();
+
+            product.Image = "";
+            
+            _context.Product.Add(product);
 
             await _context.SaveChangesAsync();
 
             return product;
+        }
+
+        [HttpPut("{product_id}")]
+        public async Task<ActionResult<Product>> Update(Product product, int product_id)
+        {
+            var product_update = await _context.Product
+                .Include(w => w.ProductStore)
+                .Where(w => w.Id == product_id)
+                .FirstOrDefaultAsync();
+
+            if (product_update == null)
+            {
+                return NotFound();
+            }
+
+            product.SerializeProps(ref product_update);
+
+            product_update.Image = "";
+
+            foreach (var store_id in product.ListStoreId)
+            {
+                if (!product_update.ProductStore.Any(cc => cc.ProductId == store_id))
+                {
+                    var new_product_store = new ProductStore
+                    {
+                        ProductId = product_update.Id,
+                        StoreId = store_id
+                    };
+
+                    product_update.ProductStore.Add(new_product_store);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            return product_update;
         }
 
         /// <summary>
@@ -211,28 +258,36 @@ namespace AuFood.Controllers
         }
 
         /// <summary>
+        /// Method for create new Product
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("{product_id}")]
+        public async Task<ActionResult<Product>> GetProduct(int product_id)
+        {
+            var Product = await _context.Product
+                .Include(w => w.ProductStore)
+                .Where(w => w.Id == product_id)
+                .FirstOrDefaultAsync();
+
+            if(Product == null)
+            {
+                return NotFound();
+            }
+
+            Product.ListStoreId = Product.ProductStore.Select(w => w.StoreId).ToList();
+
+            return Product;
+        }
+
+        /// <summary>
         /// Method for get list all products
         /// </summary>
         /// <param name="id">ID for Store</param>
         /// <returns></returns>
         [HttpGet("dash/list_all")]
-        public async Task<IEnumerable<ProductList>> GetListProduct()
+        public async Task<IEnumerable<Product>> GetListProduct()
         {
             var ListProduct = await _context.Product
-                .Include(w => w.ProductCategory)
-                .Include(w => w.ProductsPrice)
-                .Select(p => new ProductList
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Price = p.ProductsPrice
-                        .Where(pp => pp.DayWeek == DateTime.Now.DayOfWeek)
-                        .Select(pp => (double?)pp.Price)
-                        .FirstOrDefault() ?? 0.00, // Use DefaultIfEmpty to provide a default value if no price is found
-                    TimeDelivery = p.TimeDelivery.ToString(),
-                    productCategory = p.ProductCategory,
-                    Image = p.Image
-                })
                 .ToListAsync();
 
             return ListProduct;
