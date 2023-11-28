@@ -100,7 +100,7 @@ namespace AuFood.Models
                     .HasName("PRIMARY");
 
                 entity.Property(e => e.Price)
-                    .HasColumnType("double(2,2)");
+                    .HasColumnType("double");
 
                 entity.Property(e => e.DayWeek)
                     .HasColumnType("int(1)");

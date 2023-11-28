@@ -213,6 +213,16 @@ namespace AuFood.Controllers
                 return NotFound();
             }
 
+            if(product != null && product.ProductsPrice!.Count > 0)
+            {
+                product.ProductsPrice = product.ProductsPrice.Select(w => new ProductPrice
+                {
+                    DayWeek = w.DayWeek,
+                    Price = (double)w.Price,
+                    ProductId = product_update.Id
+                }).ToList();
+            }
+
             product.SerializeProps(ref product_update);
 
             product_update.Image = "";
@@ -266,6 +276,7 @@ namespace AuFood.Controllers
         {
             var Product = await _context.Product
                 .Include(w => w.ProductStore)
+                .Include(w => w.ProductsPrice)
                 .Where(w => w.Id == product_id)
                 .FirstOrDefaultAsync();
 
