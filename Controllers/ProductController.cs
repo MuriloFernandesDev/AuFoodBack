@@ -151,14 +151,14 @@ namespace AuFood.Controllers
             var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, id);
 
             var ListProduct = await _context.ProductCategory
-                .Include(w => w.Products)
+                .Include(w => w.Product)
                     .ThenInclude(w => w.ProductsPrice)
-                .Where(w => w.Products.Any(p => ListProductOnStore.Contains(p.Id)))
+                .Where(w => w.Product.Any(p => ListProductOnStore.Contains(p.Id)))
                 .Select(w => new ProductOnCategory
                 {
                     CategoryId = w.Id,
                     CategoryName = w.Name,
-                    ListProduct = w.Products
+                    ListProduct = w.Product
                     .Where(w => w.ProductsPrice.Any(pp => pp.DayWeek == DateTime.Now.DayOfWeek))
                     .Select(p => new ProductList
                     {
@@ -187,6 +187,55 @@ namespace AuFood.Controllers
             await _context.SaveChangesAsync();
 
             return product;
+        }
+
+        /// <summary>
+        /// Method for create new Product
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete("{product_id}")]
+        public async Task<ActionResult<Product>> Delete(int product_id)
+        {
+            var Product = await _context.Product.FindAsync(product_id);
+
+            if(Product == null)
+            {
+                return NotFound();
+            }
+
+            _context.Product.Remove(Product);
+
+            await _context.SaveChangesAsync();
+
+            return Product;
+        }
+
+        /// <summary>
+        /// Method for get list all products
+        /// </summary>
+        /// <param name="id">ID for Store</param>
+        /// <returns></returns>
+        [HttpGet("dash/list_all")]
+        public async Task<IEnumerable<ProductList>> GetListProduct()
+        {
+            var ListProduct = await _context.Product
+                .Include(w => w.ProductCategory)
+                .Include(w => w.ProductsPrice)
+                .Select(p => new ProductList
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Price = p.ProductsPrice
+                        .Where(pp => pp.DayWeek == DateTime.Now.DayOfWeek)
+                        .Select(pp => (double?)pp.Price)
+                        .FirstOrDefault() ?? 0.00, // Use DefaultIfEmpty to provide a default value if no price is found
+                    TimeDelivery = p.TimeDelivery.ToString(),
+                    productCategory = p.ProductCategory,
+                    Image = p.Image
+                })
+                .ToListAsync();
+
+            return ListProduct;
         }
     }
 }

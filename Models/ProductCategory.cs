@@ -4,7 +4,7 @@
     {
         public ProductCategory()
         {
-            Products = new HashSet<Product>();
+            Product = new HashSet<Product>();
         }
 
         public int Id { get; set; }
@@ -14,6 +14,6 @@
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
-        public virtual ICollection<Product>? Products { get; set; }
+        public virtual ICollection<Product>? Product { get; set; }
     }
 }

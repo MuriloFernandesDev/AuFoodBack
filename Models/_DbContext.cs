@@ -81,11 +81,8 @@ namespace AuFood.Models
                 entity.Property(e => e.Image)
                     .HasColumnType("text");
 
-                entity.Property(e => e.ListStoreId)
-                    .HasColumnType("text");
-
                 entity.HasOne(e => e.ProductCategory)
-                    .WithMany(e => e.Products)
+                    .WithMany(e => e.Product)
                     .HasForeignKey(e => e.ProductCategoryId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Product_ProductCategory");
@@ -129,7 +126,7 @@ namespace AuFood.Models
                 entity.Property(e => e.Image)
                     .HasColumnType("text");
 
-                entity.HasMany(e => e.Products)
+                entity.HasMany(e => e.Product)
                     .WithOne(e => e.ProductCategory)
                     .HasForeignKey(e => e.ProductCategoryId)
                     .OnDelete(DeleteBehavior.Cascade)
@@ -442,6 +439,9 @@ namespace AuFood.Models
 
             modelBuilder.Entity<ConsumerStore>()
                  .HasKey(x => new { x.StoreId, x.ConsumerId });
+
+            modelBuilder.Entity<ProductStore>()
+                 .HasKey(x => new { x.StoreId, x.ProductId });
 
             modelBuilder.Entity<Client_ClientLogin>()
                  .HasKey(x => new { x.ClientId, x.ClientLoginId });

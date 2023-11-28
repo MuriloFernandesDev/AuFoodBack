@@ -11,6 +11,7 @@ namespace AuFood.Models
             Order = new HashSet<Order>();
             StoreCategoryStore = new HashSet<StoreCategoryStore>();
             ConsumerStore = new HashSet<ConsumerStore>();
+            ProductStore = new HashSet<ProductStore>();
         }
         
         public int Id { get; set; }
@@ -68,5 +69,9 @@ namespace AuFood.Models
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
         public ICollection<ConsumerStore> ConsumerStore { get; set; } = null!;
+        
+        [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+        public ICollection<ProductStore> ProductStore { get; set; } = null!;
     }
 }

@@ -33,6 +33,13 @@ namespace AuFood.Controllers
             return productCategory;
         }
 
+        [HttpGet("list_all")]
+        public async Task<List<ProductCategory>> ListProductCategory()
+        {
+            var listCategory = await _context.ProductCategory.ToListAsync();
+            return listCategory;
+        }
+
         /// <summary>
         /// Get list all Product Category
         /// </summary>
@@ -44,8 +51,8 @@ namespace AuFood.Controllers
             var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, store_id);
 
             var listCategories = await _context.ProductCategory
-                .Include(w => w.Products)
-                .Where(w => w.Products.Any(p => ListProductOnStore.Contains(p.Id)) && w.Products.Count > 0)
+                .Include(w => w.Product)
+                .Where(w => w.Product.Any(p => ListProductOnStore.Contains(p.Id)) && w.Product.Count > 0)
                 .ToListAsync();
 
             return listCategories;

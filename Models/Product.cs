@@ -10,6 +10,7 @@ namespace AuFood.Models
         {
             ProductsPrice = new HashSet<ProductPrice>();
             OrderProduct = new HashSet<OrderProduct>();
+            ProductStore = new HashSet<ProductStore>();
         }
         
         public int Id { get; set; }
@@ -24,8 +25,6 @@ namespace AuFood.Models
         
         public string Image { get; set; }
 
-        public string? ListStoreId { get; set; }
-
         public int ProductCategoryId { get; set; }
 
         public int ClientId { get; set; }
@@ -39,5 +38,9 @@ namespace AuFood.Models
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
         public virtual ICollection<OrderProduct>? OrderProduct { get; set; }
+        
+        [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+        public ICollection<ProductStore> ProductStore { get; set; } = null!;
     }
 }
