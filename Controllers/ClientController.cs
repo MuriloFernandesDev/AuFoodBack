@@ -43,20 +43,20 @@ namespace AuFood.Controllers
         }
 
         [HttpPut("{client_id}")]
-        public async Task<ActionResult<Client>> Update(Client client, int client_id)
+        public async Task<ActionResult<Client>> Update(Client newClient, int client_id)
         {
-            var client_update = await _context.Client.FindAsync(client_id);
+            var client = await _context.Client.FindAsync(client_id);
 
-            if (client_update == null)
+            if (client == null)
             {
                 return NotFound();
             }
 
-            client.SerializeProps(ref client_update);
+            newClient.SerializeProps(ref client);
 
             await _context.SaveChangesAsync();
 
-            return client_update;
+            return client;
         }
 
         [HttpGet("list_all")]

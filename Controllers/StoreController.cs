@@ -1,6 +1,8 @@
-﻿using AuFood.Models;
+﻿using AuFood.Auxiliary;
+using AuFood.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace AuFood.Controllers
 {
@@ -20,24 +22,6 @@ namespace AuFood.Controllers
         public StoreController(_DbContext context)
         {
             _context = context;
-        }
-        
-        [HttpPost]
-        public async Task<Store> CreateStore(Store store)
-        {
-            _context.Store.Add(store);
-            await _context.SaveChangesAsync();
-
-            return store;
-        }
-
-        [HttpPost("storeCategory")]
-        public async Task<StoreCategory> CreateStoreCategory(StoreCategory storeCategory)
-        {
-            _context.StoreCategory.Add(storeCategory);
-
-            await _context.SaveChangesAsync();
-            return storeCategory;
         }
 
         [HttpGet("{name}")]
@@ -74,6 +58,54 @@ namespace AuFood.Controllers
             return StoreListAll;
         }
 
+        [HttpGet("avaliation/{id}")]
+        public async Task<int> GetAvalationStore(int id)
+        {
+            //buscar lista de avaliacoes por store id e fazer a média
+            var Avaliation = await _context.AvaliationStore
+                .Where(w => w.StoreId == id)
+                .Select(w => w.Rating)
+                .ToListAsync();
+
+            return Avaliation.Sum() / Avaliation.Count;
+        }
+
+
+        [HttpPost]
+        public async Task<Store> CreateStore(Store store)
+        {
+            _context.Store.Add(store);
+            await _context.SaveChangesAsync();
+
+            return store;
+        }
+
+        [HttpPut("{store_id}")]
+        public async Task<ActionResult<Store>> CreateStore(Store newStore, int store_id)
+        {
+            var store = await _context.Store.FindAsync(store_id);
+
+            if (store == null)
+            {
+                return NotFound();
+            }
+
+            newStore.SerializeProps(ref store);
+
+            await _context.SaveChangesAsync();
+
+            return store;
+        }
+
+        [HttpPost("storeCategory")]
+        public async Task<StoreCategory> CreateStoreCategory(StoreCategory storeCategory)
+        {
+            _context.StoreCategory.Add(storeCategory);
+
+            await _context.SaveChangesAsync();
+            return storeCategory;
+        }
+
         [HttpGet("dash/list_all")]
         public async Task<IEnumerable<Store>> ListAll()
         {
@@ -94,18 +126,6 @@ namespace AuFood.Controllers
                 .SingleOrDefaultAsync();
 
             return Store;
-        }
-
-        [HttpGet("avaliation/{id}")]
-        public async Task<int> GetAvalationStore(int id)
-        {
-            //buscar lista de avaliacoes por store id e fazer a média
-            var Avaliation = await _context.AvaliationStore
-                .Where(w => w.StoreId == id)
-                .Select(w => w.Rating)
-                .ToListAsync();
-
-            return Avaliation.Sum() / Avaliation.Count;
         }
     }
 }
