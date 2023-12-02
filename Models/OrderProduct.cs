@@ -6,6 +6,8 @@ namespace AuFood.Models
     {
         public int Quantity { get; set; }
 
+        public double Price { get; set; }
+
         public int OrderId { get; set; }
         public int ProductId { get; set; }
 

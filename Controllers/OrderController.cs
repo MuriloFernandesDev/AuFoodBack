@@ -25,6 +25,12 @@ namespace AuFood.Controllers
 
         public List<product_id> products { get; set; }
     }
+
+    public class ListOrder : Order
+    {
+        public List<Product> Products { get; set; }
+        public string Consumer_name { get; set; }
+    }
     
     [Route("api/[controller]")]
     [ApiController]
@@ -35,6 +41,34 @@ namespace AuFood.Controllers
         public OrderController(_DbContext context)
         {
             _context = context;
+        }
+
+        [HttpGet("list")]
+        public async Task<ActionResult<ListOrder>> ListOrder()
+        {
+            var orders = await _context.Order
+                .Include(w => w.Store)
+                .Include(w => w.Consumer)
+                .Include(w => w.ConsumerAddress)
+                .Include(w => w.OrderProduct)
+                    .ThenInclude(w => w.Product)
+                    .ThenInclude(w => w.ProductsPrice)
+                .Select(w => new ListOrder
+                {
+                    Id = w.Id,
+                    Consumer_name = w.Consumer.Name,
+                    Date = w.Date,
+                    Products = w.OrderProduct.Select(op => new Product
+                    {
+                        Name = op.Product.Name,
+                        Price = op.Price
+                    }).ToList(),
+                    StoreId = w.StoreId,
+                    TotalPrice = w.TotalPrice,
+                })
+                .ToListAsync();
+
+            return Ok(orders);
         }
 
         [HttpPost]
@@ -68,17 +102,19 @@ namespace AuFood.Controllers
             
             if(ConsumerAddress == null)
             {
-                var NewConsumerAddress = ConsumerAddress;
+                var NewConsumerAddress = order.consumerAddress;
 
-                NewConsumerAddress.ConsumerId = Consumer.Id;
+                NewConsumerAddress.Consumer = Consumer;
 
                 _context.ConsumerAddress.Add(NewConsumerAddress);
+
+                ConsumerAddress = NewConsumerAddress;
             }
             
             var newOrder = order.order;
 
-            newOrder.ConsumerId = Consumer.Id;
-            newOrder.ConsumerAddressId = ConsumerAddress.Id;
+            newOrder.Consumer = Consumer;
+            newOrder.ConsumerAddress = ConsumerAddress;
             newOrder.StoreId = Store.Id;
             newOrder.Date = DateTime.Now;
             newOrder.TotalPrice = 0;
@@ -86,48 +122,18 @@ namespace AuFood.Controllers
             _context.Order.Add(newOrder);
             await _context.SaveChangesAsync();
 
-            //var cartProductsToAdd = new List<CartProduct>();
-
-            //foreach (var product in cart.products)
-            //{
-            //    var ProductDB = await _context.Product
-            //        .Include(w => w.ProductsPrice)
-            //        .Where(w => w.Id == product.id)
-            //        .FirstOrDefaultAsync();
-
-            //    var CartProductExisting = cartProductsToAdd
-            //        .FirstOrDefault(w => w.ProductId == product.id && w.CartId == newCart.Id);
-
-            //    if(CartProductExisting != null)
-            //    {
-            //        CartProductExisting.Quantity += 1;
-            //    }
-            //    else
-            //    {
-            //        var cartProduct = new CartProduct
-            //        {
-            //            CartId = newCart.Id,
-            //            ProductId = ProductDB.Id,
-            //            Quantity = 1
-            //        };
-
-            //        cartProductsToAdd.Add(cartProduct);
-            //    }
-
-            //    // Atualize o preço total do carrinho aqui, se necessário
-            //    newCart.TotalPrice += ProductDB.ProductsPrice
-            //        .Where(w => w.DayWeek == DateTime.Now.DayOfWeek)
-            //        .Select(w => w.Price)
-            //        .FirstOrDefault();
-            //}
-
-            _context.OrderProduct.AddRange(order.products.Select(w => new OrderProduct
+            var OrderProduct = order.products.Select(w => new OrderProduct
             {
                 OrderId = newOrder.Id,
                 ProductId = w.id,
-                Quantity = w.quantity
-            }).ToList());
-            
+                Quantity = w.quantity,
+                Price = _context.ProductPrice.Find(w.id)?.Price ?? 0
+            }).ToList();
+
+            _context.OrderProduct.AddRange(OrderProduct);
+
+            newOrder.TotalPrice = OrderProduct.Sum(w => w.Price);
+
             await _context.SaveChangesAsync();
             return newOrder;
         }

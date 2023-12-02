@@ -6,7 +6,6 @@ namespace AuFood.Models
 {
     public partial class Product
     {
-
         public Product()
         {
             ProductsPrice = new HashSet<ProductPrice>();
@@ -32,6 +31,9 @@ namespace AuFood.Models
 
         [NotMapped]
         public List<int> ListStoreId { get; set; }
+
+        [NotMapped]
+        public double Price { get; set; }
 
         public virtual Client? Client { get; set; }
 

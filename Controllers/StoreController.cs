@@ -85,6 +85,9 @@ namespace AuFood.Controllers
         {
             var store = await _context.Store.FindAsync(store_id);
 
+            newStore.BackgroundImage = "https://images3.alphacoders.com/131/1313839.jpg";
+            newStore.Logo = "https://img.freepik.com/vetores-premium/vetor-do-logotipo-do-burger-art-design_260747-237.jpg";
+
             if (store == null)
             {
                 return NotFound();

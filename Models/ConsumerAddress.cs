@@ -21,7 +21,7 @@ namespace AuFood.Models
         
         public int? ZipCode { get; set; }
         
-        public int CityId { get; set; }
+        public int? CityId { get; set; }
 
         public int ConsumerId { get; set; }
 

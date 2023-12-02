@@ -5,31 +5,25 @@
 namespace AuFood.Migrations
 {
     /// <inheritdoc />
-    public partial class AjusteCampoPrice : Migration
+    public partial class NovaColunaPriceOP : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<double>(
-
+            migrationBuilder.AddColumn<double>(
                 name: "Price",
-                table: "ProductPrice",
+                table: "OrderProduct",
                 type: "double",
                 nullable: false,
-                oldClrType: typeof(double),
-                oldType: "double(2,2)");
+                defaultValue: 0.0);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<double>(
+            migrationBuilder.DropColumn(
                 name: "Price",
-                table: "ProductPrice",
-                type: "double(2,2)",
-                nullable: false,
-                oldClrType: typeof(double),
-                oldType: "double");
+                table: "OrderProduct");
         }
     }
 }
