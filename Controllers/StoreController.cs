@@ -74,6 +74,9 @@ namespace AuFood.Controllers
         [HttpPost]
         public async Task<Store> CreateStore(Store store)
         {
+            store.BackgroundImage = "https://images3.alphacoders.com/131/1313839.jpg";
+            store.Logo = "https://img.freepik.com/vetores-premium/vetor-do-logotipo-do-burger-art-design_260747-237.jpg";
+
             _context.Store.Add(store);
             await _context.SaveChangesAsync();
 

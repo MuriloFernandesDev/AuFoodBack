@@ -400,7 +400,7 @@ namespace AuFood.Models
                     .HasName("PRIMARY");
 
                 entity.Property(e => e.TotalPrice)
-                    .HasColumnType("double(2,2)");
+                    .HasColumnType("double");
 
                 entity.Property(e => e.Date)
                     .HasColumnType("datetime");
