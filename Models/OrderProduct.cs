@@ -9,11 +9,13 @@ namespace AuFood.Models
         public double Price { get; set; }
 
         public int OrderId { get; set; }
+
         public int ProductId { get; set; }
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
-        public Order Order { get; set; } = null!;
-        public Product Product { get; set; } = null!;
+        public virtual Order Order { get; set; } = null!;
+        
+        public virtual Product Product { get; set; } = null!;
     }
 }

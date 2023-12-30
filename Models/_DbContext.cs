@@ -410,6 +410,9 @@ namespace AuFood.Models
                 
                 entity.Property(e => e.DeliveryMethod)
                     .HasColumnType("int(2)");
+                
+                entity.Property(e => e.Status)
+                    .HasColumnType("int(2)");
 
                 entity.HasOne(e => e.Consumer)
                     .WithMany(e => e.Order)
@@ -426,9 +429,6 @@ namespace AuFood.Models
                     .HasForeignKey(e => e.ConsumerAddressId)
                     .HasConstraintName("FK_Order_ConsumerAdress");
             });
-
-            //https://www.macoratti.net/19/09/efcore_mmr2.htm
-            //exemplo de como inserir dados
 
             modelBuilder.Entity<OrderProduct>(entity =>
             {

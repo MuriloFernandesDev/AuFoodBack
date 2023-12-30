@@ -19,6 +19,8 @@ namespace AuFood.Models
 
         public DeliveryMethod DeliveryMethod { get; set; }
 
+        public OrderStatus? Status { get; set; } = OrderStatus.Preparing;
+
         public int ConsumerId { get; set; }
 
         public int StoreId { get; set; }

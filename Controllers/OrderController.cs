@@ -43,7 +43,7 @@ namespace AuFood.Controllers
             _context = context;
         }
 
-        [HttpGet("list")]
+        [HttpGet("dash/list")]
         public async Task<ActionResult<ListOrder>> ListOrder()
         {
             var orders = await _context.Order
@@ -65,10 +65,26 @@ namespace AuFood.Controllers
                     }).ToList(),
                     StoreId = w.StoreId,
                     TotalPrice = w.TotalPrice,
+                    Status = w.Status
                 })
                 .ToListAsync();
 
             return Ok(orders);
+        }
+
+        [HttpPut("dash/cancel/{id}")]
+        public async Task<ActionResult> CancelOrder(int id)
+        {
+            var order = await _context.Order.FindAsync(id);
+
+            if (order == null) 
+                return NotFound();
+
+            order.Status = OrderStatus.Canceled;
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
 
         [HttpPost]

@@ -25,4 +25,13 @@
         Pickup = 1,
         Delivery = 2
     }
+
+    public enum OrderStatus
+    {
+        Preparing = 1,
+        InPreparing = 2,
+        Send = 3,
+        Done = 4,
+        Canceled = 5
+    }
 }
