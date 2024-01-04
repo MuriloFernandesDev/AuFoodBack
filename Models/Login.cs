@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AuFood.Models
 {
-    public partial class ClientLogin
+    public partial class Login
     {
-        public ClientLogin()
+        public Login()
         {
-            Client_ClientLogin = new HashSet<Client_ClientLogin>();
+            Store_login = new HashSet<Store_login>();
         }
         
         public int Id { get; set; }
@@ -39,6 +39,12 @@ namespace AuFood.Models
         [NotMapped]
         public string? Pass { get; set; } = null!;
 
+        /// <summary>
+        /// Password of Client Ex: 123456
+        /// </summary>
+        [NotMapped]
+        public List<int>? List_store_id { get; set; }
+
         public DateTime? Created { get; set; }
 
         /// <summary>
@@ -51,25 +57,8 @@ namespace AuFood.Models
         /// </summary>
         public string Profile { get; set; } = "Client";
 
-        [NotMapped]
-        public List<int> ListClientsId { get; set; }
-
-        [NotMapped]
-        public List<Client>? ListClients { get; set; }
-
-        /// <summary>
-        /// ID of Client Ex: 1
-        /// </summary>
-        public int ClientId { get; set; }
-
-
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
-        public ICollection<Client_ClientLogin> Client_ClientLogin { get; set; }
-
-        [System.Text.Json.Serialization.JsonIgnore]
-        [Newtonsoft.Json.JsonIgnore]
-        public virtual Client? Client { get; set; }
-
+        public ICollection<Store_login> Store_login { get; set; }
     }
 }

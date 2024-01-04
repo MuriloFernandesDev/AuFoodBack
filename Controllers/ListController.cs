@@ -24,20 +24,6 @@ namespace AuFood.Controllers
             _context = context;
         }
 
-        [HttpGet("client")]
-        public async Task<IEnumerable<LabelValue>> ListClient()
-        {
-            var ListClients = await _context.Client
-                .Select(w => new LabelValue
-                {
-                    Label = w.Name,
-                    Value = w.Id
-                })
-                .ToListAsync();
-            
-            return ListClients;
-        }
-
         [HttpGet("store")]
         public async Task<IEnumerable<LabelValue>> ListStore()
         {
@@ -45,8 +31,7 @@ namespace AuFood.Controllers
                 .Select(w => new LabelValue
                 {
                     Label = w.Name,
-                    Value = w.Id,
-                    ClientId = w.ClientId
+                    Value = w.Id
                 })
                 .ToListAsync();
 
@@ -56,7 +41,7 @@ namespace AuFood.Controllers
         [HttpGet("productCategory")]
         public async Task<IEnumerable<LabelValue>> ListProductCategory()
         {
-            var ListStore = await _context.ProductCategory
+            var ListStore = await _context.Product_category
                 .Select(w => new LabelValue
                 {
                     Label = w.Name,

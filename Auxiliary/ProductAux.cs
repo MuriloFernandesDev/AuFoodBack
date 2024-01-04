@@ -11,15 +11,15 @@ namespace AuFood.Auxiliary
         public static async Task<List<int>> GetAllProductOnStore(_DbContext _context, int StoreId)
         {
             var Products = _context.Product
-                .Include(w => w.ProductStore)
-                .Where(w => w.ProductStore.Count > 0)
+                .Include(w => w.Product_store)
+                .Where(w => w.Product_store.Count > 0)
                 .AsQueryable();
 
             var productIds = new List<int>();
 
             foreach (var product in Products)
             {
-                var listStoreId = product.ProductStore.Select(w => w.StoreId.ToString()).ToList();
+                var listStoreId = product.Product_store.Select(w => w.Store_id.ToString()).ToList();
 
                 if (listStoreId.Contains(StoreId.ToString()))
                     productIds.Add(product.Id);

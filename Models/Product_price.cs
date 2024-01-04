@@ -1,6 +1,6 @@
 ﻿namespace AuFood.Models
 {
-    public partial class ProductPrice
+    public partial class Product_price
     {
 
         /// <summary>
@@ -16,12 +16,12 @@
         /// <summary>
         /// Day of week of price
         /// </summary>
-        public DayOfWeek DayWeek { get; set; }
+        public DayOfWeek Day_week { get; set; }
 
         /// <summary>
         /// Id of product
         /// </summary>
-        public int ProductId { get; set; }
+        public int Product_id { get; set; }
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]

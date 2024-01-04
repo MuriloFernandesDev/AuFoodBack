@@ -6,16 +6,16 @@ namespace AuFood.Models
     {
         public Consumer()
         {
-            ConsumerAddress = new HashSet<ConsumerAddress>();
+            Consumer_address = new HashSet<Consumer_address>();
             Order = new HashSet<Order>();
-            ConsumerStore = new HashSet<ConsumerStore>();
+            Consumer_store = new HashSet<Consumer_store>();
         }
         
         public int Id { get; set; }
 
         public string Phone { get; set; }
 
-        public bool PhoneConfirmed { get; set; }
+        public bool Phone_confirmed { get; set; }
 
         public string Name { get; set; }
 
@@ -27,7 +27,7 @@ namespace AuFood.Models
         [JsonIgnore]
         public byte[]? Password { get; set; } = null!;
 
-        public ICollection<ConsumerAddress> ConsumerAddress { get; set; }
+        public ICollection<Consumer_address> Consumer_address { get; set; }
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
@@ -35,6 +35,6 @@ namespace AuFood.Models
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
-        public ICollection<ConsumerStore> ConsumerStore { get; set; }
+        public ICollection<Consumer_store> Consumer_store { get; set; }
     }
 }

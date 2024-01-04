@@ -2,9 +2,9 @@
 
 namespace AuFood.Models
 {
-    public partial class ConsumerAddress
+    public partial class Consumer_address
     {
-        public ConsumerAddress()
+        public Consumer_address()
         {
             Order = new HashSet<Order>();
         }
@@ -21,9 +21,9 @@ namespace AuFood.Models
         
         public int? ZipCode { get; set; }
         
-        public int? CityId { get; set; }
+        public int? City_id { get; set; }
 
-        public int ConsumerId { get; set; }
+        public int Consumer_id { get; set; }
 
         public virtual City? City { get; set; }
 

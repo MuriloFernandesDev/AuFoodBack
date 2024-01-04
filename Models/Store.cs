@@ -7,11 +7,11 @@ namespace AuFood.Models
     {
         public Store()
         {
-            AvaliationsStories = new HashSet<AvaliationStore>();
             Order = new HashSet<Order>();
-            StoreCategoryStore = new HashSet<StoreCategoryStore>();
-            ConsumerStore = new HashSet<ConsumerStore>();
-            ProductStore = new HashSet<ProductStore>();
+            Store_category_store = new HashSet<Store_category_store>();
+            Consumer_store = new HashSet<Consumer_store>();
+            Product_store = new HashSet<Product_store>();
+            Store_login = new HashSet<Store_login>();
         }
         
         public int Id { get; set; }
@@ -28,21 +28,17 @@ namespace AuFood.Models
 
         public string Email { get; set; }
 
-        public string NumberAddress { get; set; }
+        public string Number_address { get; set; }
 
         public string Cnpj { get; set; }
 
-        public string? InstagramUrl { get; set; }
+        public string Background_image { get; set; }
 
-        public string? FacebookUrl { get; set; }
+        public string Color_primary { get; set; }
 
-        public string BackgroundImage { get; set; }
+        public string Color_secondary { get; set; }
 
-        public string ColorPrimary { get; set; }
-
-        public string ColorSecondary { get; set; }
-
-        public string ColorBackground { get; set; }
+        public string Color_background { get; set; }
 
         public string Zip { get; set; }
 
@@ -50,17 +46,15 @@ namespace AuFood.Models
 
         public string Neighborhood { get; set; }
 
-        public int CityId { get; set; }
+        public int City_id { get; set; }
 
         public virtual City? City { get; set; }
 
-        public int ClientId { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+        public ICollection<Store_login> Store_login { get; set; }
 
-        public virtual Client? Client { get; set; }
-
-        public ICollection<StoreCategoryStore> StoreCategoryStore { get; set; }
-        
-        public ICollection<AvaliationStore> AvaliationsStories { get; set; }
+        public ICollection<Store_category_store> Store_category_store { get; set; }
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
@@ -68,10 +62,10 @@ namespace AuFood.Models
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
-        public ICollection<ConsumerStore> ConsumerStore { get; set; } = null!;
+        public ICollection<Consumer_store> Consumer_store { get; set; }
         
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
-        public ICollection<ProductStore> ProductStore { get; set; } = null!;
+        public ICollection<Product_store> Product_store { get; set; }
     }
 }

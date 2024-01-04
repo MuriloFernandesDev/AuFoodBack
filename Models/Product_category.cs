@@ -1,8 +1,8 @@
 ﻿namespace AuFood.Models
 {
-    public partial class ProductCategory
+    public partial class Product_category
     {
-        public ProductCategory()
+        public Product_category()
         {
             Product = new HashSet<Product>();
         }

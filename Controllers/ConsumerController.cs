@@ -30,9 +30,9 @@ namespace AuFood.Controllers
         [HttpGet("list_consumer_by_store/{store_id}")]
         public async Task<List<Consumer>> GetListConsumerByStore(int store_id)
         {
-            var list_consumer_by_store = await _context.ConsumerStore
+            var list_consumer_by_store = await _context.Consumer_store
                 .Include(w => w.Consumer)
-                .Where(w => w.StoreId == store_id)
+                .Where(w => w.Store_id == store_id)
                 .Select(w => w.Consumer)
                 .ToListAsync();
 
@@ -48,7 +48,7 @@ namespace AuFood.Controllers
         public async Task<ActionResult<Consumer>> GetConsumer(string phone)
         {
             var consumer = await _context.Consumer
-                .Where(w => w.Phone == phone && w.PhoneConfirmed == true)
+                .Where(w => w.Phone == phone && w.Phone_confirmed == true)
                 .OrderBy(w => w.Id)
                 .Select(w => new Consumer
                 {
@@ -96,7 +96,7 @@ namespace AuFood.Controllers
         public async Task<ActionResult<Consumer>> ConfirmConsumer(int consumer_id, string code)
         {
             var consumer = await _context.Consumer
-                .Include(w => w.ConsumerAddress)
+                .Include(w => w.Consumer_address)
                     .ThenInclude(w => w.City)
                 .Where(w => w.Id == consumer_id)
                 .FirstOrDefaultAsync();
@@ -127,9 +127,9 @@ namespace AuFood.Controllers
 
             var Store = await _context.Store.FindAsync(consumer.StoreId);
 
-            newConsumer.ConsumerStore = new List<ConsumerStore>
+            newConsumer.Consumer_store = new List<Consumer_store>
                 {
-                  new ConsumerStore {
+                  new Consumer_store {
                     Consumer = newConsumer,
                     Store = Store,
                   }

@@ -24,9 +24,9 @@ namespace AuFood.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ProductCategory> Post(ProductCategory productCategory)
+        public async Task<Product_category> Post(Product_category productCategory)
         {
-            await _context.ProductCategory.AddAsync(productCategory);
+            await _context.Product_category.AddAsync(productCategory);
 
             await _context.SaveChangesAsync();
 
@@ -34,9 +34,9 @@ namespace AuFood.Controllers
         }
 
         [HttpGet("list_all")]
-        public async Task<List<ProductCategory>> ListProductCategory()
+        public async Task<List<Product_category>> ListProductCategory()
         {
-            var listCategory = await _context.ProductCategory.ToListAsync();
+            var listCategory = await _context.Product_category.ToListAsync();
             return listCategory;
         }
 
@@ -46,11 +46,11 @@ namespace AuFood.Controllers
         /// <param name="store_id">ID for Store</param>
         /// <returns></returns>
         [HttpGet("list_categories_store/{store_id}")]
-        public async Task<List<ProductCategory>> Post(int store_id)
+        public async Task<List<Product_category>> Post(int store_id)
         {
             var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, store_id);
 
-            var listCategories = await _context.ProductCategory
+            var listCategories = await _context.Product_category
                 .Include(w => w.Product)
                 .Where(w => w.Product.Any(p => ListProductOnStore.Contains(p.Id)) && w.Product.Count > 0)
                 .ToListAsync();

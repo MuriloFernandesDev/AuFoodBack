@@ -19,7 +19,7 @@ namespace AuFood.Controllers
 
         public Consumer consumer { get; set; }
 
-        public ConsumerAddress consumerAddress { get; set; }
+        public Consumer_address consumerAddress { get; set; }
 
         public int storeId { get; set; }
 
@@ -49,22 +49,22 @@ namespace AuFood.Controllers
             var orders = await _context.Order
                 .Include(w => w.Store)
                 .Include(w => w.Consumer)
-                .Include(w => w.ConsumerAddress)
-                .Include(w => w.OrderProduct)
+                .Include(w => w.Consumer_address)
+                .Include(w => w.Order_product)
                     .ThenInclude(w => w.Product)
-                    .ThenInclude(w => w.ProductsPrice)
+                    .ThenInclude(w => w.Product_price)
                 .Select(w => new ListOrder
                 {
                     Id = w.Id,
                     Consumer_name = w.Consumer.Name,
                     Date = w.Date,
-                    Products = w.OrderProduct.Select(op => new Product
+                    Products = w.Order_product.Select(op => new Product
                     {
                         Name = op.Product.Name,
                         Price = op.Price
                     }).ToList(),
-                    StoreId = w.StoreId,
-                    TotalPrice = w.TotalPrice,
+                    Store_id = w.Store_id,
+                    Total_price = w.Total_price,
                     Status = w.Status
                 })
                 .ToListAsync();
@@ -90,12 +90,12 @@ namespace AuFood.Controllers
         [HttpPost]
         public async Task<ActionResult<Order>> Post(newOrder order)
         {
-            var ConsumerStore = await _context.ConsumerStore
-                .Where(w => w.ConsumerId == order.consumer.Id && w.StoreId == order.storeId)
+            var ConsumerStore = await _context.Consumer_store
+                .Where(w => w.Consumer_id == order.consumer.Id && w.Store_id == order.storeId)
                 .FirstOrDefaultAsync();
 
             var Consumer = await _context.Consumer.FindAsync(order.consumer.Id);
-            var ConsumerAddress = await _context.ConsumerAddress.FindAsync(order.consumerAddress.Id);
+            var ConsumerAddress = await _context.Consumer_address.FindAsync(order.consumerAddress.Id);
             var Store = await _context.Store.FindAsync(order.storeId);
 
             if (Consumer == null)
@@ -109,7 +109,7 @@ namespace AuFood.Controllers
 
             if (ConsumerStore == null)
             {
-                _context.ConsumerStore.Add(new ConsumerStore
+                _context.Consumer_store.Add(new Consumer_store
                 {
                     Consumer = Consumer,
                     Store = Store,
@@ -122,7 +122,7 @@ namespace AuFood.Controllers
 
                 NewConsumerAddress.Consumer = Consumer;
 
-                _context.ConsumerAddress.Add(NewConsumerAddress);
+                _context.Consumer_address.Add(NewConsumerAddress);
 
                 ConsumerAddress = NewConsumerAddress;
             }
@@ -130,25 +130,25 @@ namespace AuFood.Controllers
             var newOrder = order.order;
 
             newOrder.Consumer = Consumer;
-            newOrder.ConsumerAddress = ConsumerAddress;
-            newOrder.StoreId = Store.Id;
+            newOrder.Consumer_address = ConsumerAddress;
+            newOrder.Store_id = Store.Id;
             newOrder.Date = DateTime.Now;
-            newOrder.TotalPrice = 0;
+            newOrder.Total_price = 0;
 
             _context.Order.Add(newOrder);
             await _context.SaveChangesAsync();
 
-            var OrderProduct = order.products.Select(w => new OrderProduct
+            var OrderProduct = order.products.Select(w => new Order_product
             {
-                OrderId = newOrder.Id,
-                ProductId = w.id,
+                Order_id = newOrder.Id,
+                Product_id = w.id,
                 Quantity = w.quantity,
-                Price = _context.ProductPrice.Find(w.id)?.Price ?? 0
+                Price = _context.Product_price.Find(w.id)?.Price ?? 0
             }).ToList();
 
-            _context.OrderProduct.AddRange(OrderProduct);
+            _context.Order_product.AddRange(OrderProduct);
 
-            newOrder.TotalPrice = OrderProduct.Sum(w => w.Price);
+            newOrder.Total_price = OrderProduct.Sum(w => w.Price);
 
             await _context.SaveChangesAsync();
             return newOrder;

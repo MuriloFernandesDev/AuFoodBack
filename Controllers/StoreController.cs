@@ -42,7 +42,6 @@ namespace AuFood.Controllers
         {
             //remover todo espaço de w.Name e name e colocar -
             var Store = await _context.Store
-                .Include(w => w.AvaliationsStories)
                 .Include(w => w.City)
                     .ThenInclude(w => w.State)
                 .ToListAsync();
@@ -50,31 +49,16 @@ namespace AuFood.Controllers
             var StoreListAll = Store.Select(w => new StoreListAll
             {
                 Logo = w.Logo,
-                Name = w.Name,
-                Rating = w.AvaliationsStories.Any() ? (w.AvaliationsStories.Sum(a => a.Rating) / w.AvaliationsStories.Count).ToString("0.0") : "0.0",
-                QtdRating = w.AvaliationsStories.Count
+                Name = w.Name
             }).ToList();
-
+             
             return StoreListAll;
         }
-
-        [HttpGet("avaliation/{id}")]
-        public async Task<int> GetAvalationStore(int id)
-        {
-            //buscar lista de avaliacoes por store id e fazer a média
-            var Avaliation = await _context.AvaliationStore
-                .Where(w => w.StoreId == id)
-                .Select(w => w.Rating)
-                .ToListAsync();
-
-            return Avaliation.Sum() / Avaliation.Count;
-        }
-
 
         [HttpPost]
         public async Task<Store> CreateStore(Store store)
         {
-            store.BackgroundImage = "https://images3.alphacoders.com/131/1313839.jpg";
+            store.Background_image = "https://images3.alphacoders.com/131/1313839.jpg";
             store.Logo = "https://img.freepik.com/vetores-premium/vetor-do-logotipo-do-burger-art-design_260747-237.jpg";
 
             _context.Store.Add(store);
@@ -88,7 +72,7 @@ namespace AuFood.Controllers
         {
             var store = await _context.Store.FindAsync(store_id);
 
-            newStore.BackgroundImage = "https://images3.alphacoders.com/131/1313839.jpg";
+            newStore.Background_image = "https://images3.alphacoders.com/131/1313839.jpg";
             newStore.Logo = "https://img.freepik.com/vetores-premium/vetor-do-logotipo-do-burger-art-design_260747-237.jpg";
 
             if (store == null)
@@ -104,9 +88,9 @@ namespace AuFood.Controllers
         }
 
         [HttpPost("storeCategory")]
-        public async Task<StoreCategory> CreateStoreCategory(StoreCategory storeCategory)
+        public async Task<Store_category> CreateStoreCategory(Store_category storeCategory)
         {
-            _context.StoreCategory.Add(storeCategory);
+            _context.Store_category.Add(storeCategory);
 
             await _context.SaveChangesAsync();
             return storeCategory;

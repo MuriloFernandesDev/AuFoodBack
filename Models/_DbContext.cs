@@ -9,35 +9,31 @@ namespace AuFood.Models
     {
         public DbSet<Product> Product { get; set; }
         
-        public DbSet<ProductPrice> ProductPrice { get; set; }
+        public DbSet<Product_price> Product_price { get; set; }
 
-        public DbSet<ProductCategory> ProductCategory { get; set; }
+        public DbSet<Product_category> Product_category { get; set; }
 
-        public DbSet<Client> Client { get; set; }
-
-        public DbSet<ClientLogin> ClientLogin { get; set; }
+        public DbSet<Login> Login { get; set; }
         
         public DbSet<Store> Store { get; set; }
         
-        public DbSet<StoreCategory> StoreCategory { get; set; }
+        public DbSet<Store_category> Store_category { get; set; }
         
-        public DbSet<StoreCategoryStore> StoreCategoryStore { get; set; }
+        public DbSet<Store_category_store> Store_category_store { get; set; }
 
         public DbSet<City> City { get; set; }
 
         public DbSet<State> State { get; set; }
         
-        public DbSet<AvaliationStore> AvaliationStore { get; set; }
-        
         public DbSet<Consumer> Consumer { get; set; }
         
-        public DbSet<ConsumerAddress> ConsumerAddress { get; set; }
+        public DbSet<Consumer_address> Consumer_address { get; set; }
         
-        public DbSet<ConsumerStore> ConsumerStore { get; set; }
+        public DbSet<Consumer_store> Consumer_store { get; set; }
         
-        public DbSet<Client_ClientLogin> Client_ClientLogin { get; set; }
+        public DbSet<Store_login> Store_login { get; set; }
         
-        public DbSet<OrderProduct> OrderProduct { get; set; }
+        public DbSet<Order_product> Order_product { get; set; }
 
         public DbSet<Order> Order { get; set; }
         
@@ -65,9 +61,6 @@ namespace AuFood.Models
             {
                 entity.HasKey(e => e.Id)
                     .HasName("PRIMARY");
-                
-                entity.Property(e => e.QtdPeopleServe)
-                    .HasColumnType("int(2)");
 
                 entity.Property(e => e.Name)
                     .HasMaxLength(30);
@@ -75,26 +68,17 @@ namespace AuFood.Models
                 entity.Property(e => e.Description)
                     .HasMaxLength(100);
 
-                entity.Property(e => e.TimeDelivery)
-                    .HasColumnType("int(3)");
-
                 entity.Property(e => e.Image)
                     .HasColumnType("text");
 
-                entity.HasOne(e => e.ProductCategory)
+                entity.HasOne(e => e.Product_category)
                     .WithMany(e => e.Product)
-                    .HasForeignKey(e => e.ProductCategoryId)
+                    .HasForeignKey(e => e.Product_category_id)
                     .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_Product_ProductCategory");
-
-                entity.HasOne(e => e.Client)
-                    .WithMany(e => e.Products)
-                    .HasForeignKey(e => e.ClientId)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_Client_Product");
+                    .HasConstraintName("FK_product_product_category");
             });
 
-            modelBuilder.Entity<ProductPrice>(entity =>
+            modelBuilder.Entity<Product_price>(entity =>
             {
                 entity.HasKey(e => e.Id)
                     .HasName("PRIMARY");
@@ -102,17 +86,17 @@ namespace AuFood.Models
                 entity.Property(e => e.Price)
                     .HasColumnType("double");
 
-                entity.Property(e => e.DayWeek)
+                entity.Property(e => e.Day_week)
                     .HasColumnType("int(1)");
 
                 entity.HasOne(e => e.Product)
-                    .WithMany(e => e.ProductsPrice)
-                    .HasForeignKey(e => e.ProductId)
+                    .WithMany(e => e.Product_price)
+                    .HasForeignKey(e => e.Product_id)
                     .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_ProductPrice_Product");
+                    .HasConstraintName("FK_product_price_product");
             });
 
-            modelBuilder.Entity<ProductCategory>(entity =>
+            modelBuilder.Entity<Product_category>(entity =>
             {
                 entity.HasKey(e => e.Id)
                     .HasName("PRIMARY");
@@ -127,38 +111,38 @@ namespace AuFood.Models
                     .HasColumnType("text");
 
                 entity.HasMany(e => e.Product)
-                    .WithOne(e => e.ProductCategory)
-                    .HasForeignKey(e => e.ProductCategoryId)
+                    .WithOne(e => e.Product_category)
+                    .HasForeignKey(e => e.Product_category_id)
                     .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_Product_ProductCategory");
+                    .HasConstraintName("FK_product_product_category");
             });
 
-            modelBuilder.Entity<Client>(entity =>
-            {
-                entity.HasKey(e => e.Id)
-                    .HasName("PRIMARY");
+            //modelBuilder.Entity<Client>(entity =>
+            //{
+            //    entity.HasKey(e => e.Id)
+            //        .HasName("PRIMARY");
 
-                entity.Property(e => e.Name)
-                    .HasMaxLength(30);
+            //    entity.Property(e => e.Name)
+            //        .HasMaxLength(30);
 
-                entity.Property(e => e.Created)
-                    .HasColumnType("datetime");
+            //    entity.Property(e => e.Created)
+            //        .HasColumnType("datetime");
 
-                entity.Property(e => e.Phone)
-                    .HasMaxLength(30);
+            //    entity.Property(e => e.Phone)
+            //        .HasMaxLength(30);
 
-                entity.Property(e => e.Whatsapp)
-                    .HasMaxLength(30);
+            //    entity.Property(e => e.Whatsapp)
+            //        .HasMaxLength(30);
 
-                entity.Property(e => e.Email)
-                    .HasMaxLength(30);
+            //    entity.Property(e => e.Email)
+            //        .HasMaxLength(30);
 
-                entity.Property(e => e.Logo)
-                    .HasColumnType("text");
-            });
+            //    entity.Property(e => e.Logo)
+            //        .HasColumnType("text");
+            //});
 
             //criar tabela com os campos acima
-            modelBuilder.Entity<ClientLogin>(entity =>
+            modelBuilder.Entity<Login>(entity =>
             {
                 entity.HasKey(e => e.Id)
                     .HasName("PRIMARY");
@@ -183,12 +167,6 @@ namespace AuFood.Models
 
                 entity.Property(e => e.Profile)
                     .HasMaxLength(30);
-                
-                entity.HasOne(e => e.Client)
-                    .WithMany(e => e.ClientsLogin)
-                    .HasForeignKey(e => e.ClientId)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_ClientLogin_Client");
             });
 
             modelBuilder.Entity<Store>(entity =>
@@ -208,22 +186,16 @@ namespace AuFood.Models
                 entity.Property(e => e.Email)
                     .HasMaxLength(30);
                 
-                entity.Property(e => e.NumberAddress)
+                entity.Property(e => e.Number_address)
                     .HasMaxLength(8);
 
                 entity.Property(e => e.Cnpj)
                     .HasMaxLength(14);
 
-                entity.Property(e => e.InstagramUrl)
-                    .HasMaxLength(100);
-                
-                entity.Property(e => e.FacebookUrl)
-                    .HasMaxLength(100);
-
                 entity.Property(e => e.Logo)
                     .HasColumnType("text");
                 
-                entity.Property(e => e.BackgroundImage)
+                entity.Property(e => e.Background_image)
                     .HasColumnType("text");
 
                 entity.Property(e => e.Description)
@@ -234,36 +206,12 @@ namespace AuFood.Models
 
                 entity.HasOne(e => e.City)
                    .WithMany(e => e.Store)
-                   .HasForeignKey(e => e.CityId)
+                   .HasForeignKey(e => e.City_id)
                    .OnDelete(DeleteBehavior.Cascade)
-                   .HasConstraintName("FK_Store_City");
-
-                entity.HasOne(e => e.Client)
-                    .WithMany(e => e.Store)
-                    .HasForeignKey(e => e.ClientId)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_Store_Client");
+                   .HasConstraintName("FK_store_city");
             });
 
-            modelBuilder.Entity<AvaliationStore>(entity =>
-            {
-                entity.HasKey(e => e.Id)
-                    .HasName("PRIMARY");
-
-                entity.Property(e => e.Rating)
-                    .HasColumnType("int(2)");
-
-                entity.Property(e => e.Comment)
-                    .HasMaxLength(255);
-
-                entity.HasOne(e => e.Store)
-                    .WithMany(e => e.AvaliationsStories)
-                    .HasForeignKey(e => e.StoreId)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_Avaliation_Store");
-            });
-
-            modelBuilder.Entity<StoreCategory>(entity =>
+            modelBuilder.Entity<Store_category>(entity =>
             {
                 entity.HasKey(e => e.Id)
                     .HasName("PRIMARY");
@@ -274,40 +222,6 @@ namespace AuFood.Models
                 entity.Property(e => e.Icon)
                     .HasMaxLength(30);
             });
-
-            modelBuilder.Entity<StoreCategoryStore>()
-           .HasKey(scs => new { scs.StoreId, scs.StoreCategoryId });
-
-            modelBuilder.Entity<StoreCategoryStore>()
-                .HasOne(scs => scs.Store)
-                .WithMany(s => s.StoreCategoryStore)
-                .HasForeignKey(scs => scs.StoreId);
-
-            modelBuilder.Entity<StoreCategoryStore>()
-                .HasOne(scs => scs.StoreCategory)
-                .WithMany(sc => sc.StoreCategoryStore)
-                .HasForeignKey(scs => scs.StoreCategoryId);
-
-            //Exemplo de uso das tabelas Store StoreCategory StoreCategoryStore
-
-            //criação:
-            //var store = new Store { Name = "Minha Loja" };
-            //var category = new StoreCategory { Name = "Categoria 1" };
-
-            //var storeCategoryStore = new StoreCategoryStore
-            //{
-            //    Store = store,
-            //    StoreCategory = category
-            //};
-
-            //context.StoreCategoryStores.Add(storeCategoryStore);
-            //context.SaveChanges();
-
-            //consulta:
-            //var storesInCategory = context.StoreCategoryStores
-            //    .Where(sc => sc.StoreCategoryId == categoryId)
-            //    .Select(sc => sc.Store)
-            //    .ToList();
 
             modelBuilder.Entity<State>(entity =>
             {
@@ -331,9 +245,9 @@ namespace AuFood.Models
                 
                 entity.HasOne(e => e.State)
                     .WithMany(e => e.City)
-                    .HasForeignKey(e => e.StateId)
+                    .HasForeignKey(e => e.State_id)
                     .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_State_City");
+                    .HasConstraintName("FK_state_city");
             });
 
             modelBuilder.Entity<Consumer>(entity =>
@@ -350,7 +264,7 @@ namespace AuFood.Models
                 entity.Property(e => e.Code)
                     .HasMaxLength(4);
 
-                entity.Property(e => e.PhoneConfirmed)
+                entity.Property(e => e.Phone_confirmed)
                     .HasColumnType("bit(1)");
 
                 entity.Property(e => e.Email)
@@ -361,7 +275,7 @@ namespace AuFood.Models
                     .IsFixedLength();
             });
 
-            modelBuilder.Entity<ConsumerAddress>(entity =>
+            modelBuilder.Entity<Consumer_address>(entity =>
             {
                 entity.HasKey(e => e.Id)
                     .HasName("PRIMARY");
@@ -382,16 +296,16 @@ namespace AuFood.Models
                     .HasMaxLength(30);
 
                 entity.HasOne(e => e.Consumer)
-                    .WithMany(e => e.ConsumerAddress)
-                    .HasForeignKey(e => e.ConsumerId)
+                    .WithMany(e => e.Consumer_address)
+                    .HasForeignKey(e => e.Consumer_id)
                     .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_Consumer_ConsumerAddress");
+                    .HasConstraintName("FK_consumer_consumer_address");
                 
                 entity.HasOne(e => e.City)
-                    .WithMany(e => e.ConsumerAddress)
-                    .HasForeignKey(e => e.CityId)
+                    .WithMany(e => e.Consumer_address)
+                    .HasForeignKey(e => e.City_id)
                     .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_Consumer_City");
+                    .HasConstraintName("FK_consumer_city");
             });
 
             modelBuilder.Entity<Order>(entity =>
@@ -399,16 +313,16 @@ namespace AuFood.Models
                 entity.HasKey(e => e.Id)
                     .HasName("PRIMARY");
 
-                entity.Property(e => e.TotalPrice)
+                entity.Property(e => e.Total_price)
                     .HasColumnType("double");
 
                 entity.Property(e => e.Date)
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.PaymentMethod)
+                entity.Property(e => e.Payment_method)
                     .HasColumnType("int(2)"); 
                 
-                entity.Property(e => e.DeliveryMethod)
+                entity.Property(e => e.Delivery_method)
                     .HasColumnType("int(2)");
                 
                 entity.Property(e => e.Status)
@@ -416,23 +330,23 @@ namespace AuFood.Models
 
                 entity.HasOne(e => e.Consumer)
                     .WithMany(e => e.Order)
-                    .HasForeignKey(e => e.ConsumerId)
-                    .HasConstraintName("FK_Order_Consumer");
+                    .HasForeignKey(e => e.Consumer_id)
+                    .HasConstraintName("FK_order_consumer");
 
                 entity.HasOne(e => e.Store)
                     .WithMany(e => e.Order)
-                    .HasForeignKey(e => e.StoreId)
-                    .HasConstraintName("FK_Order_Store");
+                    .HasForeignKey(e => e.Store_id)
+                    .HasConstraintName("FK_order_store");
 
-                entity.HasOne(e => e.ConsumerAddress)
+                entity.HasOne(e => e.Consumer_address)
                     .WithMany(e => e.Order)
-                    .HasForeignKey(e => e.ConsumerAddressId)
-                    .HasConstraintName("FK_Order_ConsumerAdress");
+                    .HasForeignKey(e => e.Consumer_address_id)
+                    .HasConstraintName("FK_order_consumer_address");
             });
 
-            modelBuilder.Entity<OrderProduct>(entity =>
+            modelBuilder.Entity<Order_product>(entity =>
             {
-                entity.HasKey(x => new { x.ProductId, x.OrderId });
+                entity.HasKey(x => new { x.Product_id, x.Order_id });
 
                 entity.Property(e => e.Quantity)
                     .HasColumnType("int");
@@ -442,14 +356,98 @@ namespace AuFood.Models
             });
 
 
-            modelBuilder.Entity<ConsumerStore>()
-                 .HasKey(x => new { x.StoreId, x.ConsumerId });
+            
+            // ** Relacionamentos N x N ** //
 
-            modelBuilder.Entity<ProductStore>()
-                 .HasKey(x => new { x.StoreId, x.ProductId });
 
-            modelBuilder.Entity<Client_ClientLogin>()
-                 .HasKey(x => new { x.ClientId, x.ClientLoginId });
+            // ** Order_Product
+            modelBuilder.Entity<Order_product>()
+                .HasOne(w => w.Product)
+                .WithMany(s => s.Order_product)
+                .HasForeignKey(w => w.Product_id);
+
+            modelBuilder.Entity<Order_product>()
+                .HasOne(w => w.Order)
+                .WithMany(sc => sc.Order_product)
+                .HasForeignKey(w => w.Order_id);
+
+            // ** Consumer_Store
+            modelBuilder.Entity<Consumer_store>()
+                 .HasKey(x => new { x.Store_id, x.Consumer_id });
+
+            modelBuilder.Entity<Consumer_store>()
+                 .HasOne(w => w.Store)
+                 .WithMany(s => s.Consumer_store)
+                 .HasForeignKey(w => w.Store_id);
+
+            modelBuilder.Entity<Consumer_store>()
+                 .HasOne(w => w.Consumer)
+                 .WithMany(s => s.Consumer_store)
+                 .HasForeignKey(w => w.Consumer_id);
+
+            // ** Product_Store
+            modelBuilder.Entity<Product_store>()
+                 .HasKey(x => new { x.Store_id, x.Product_id });
+
+            modelBuilder.Entity<Product_store>()
+                 .HasOne(w => w.Store)
+                 .WithMany(s => s.Product_store)
+                 .HasForeignKey(w => w.Store_id);
+
+            modelBuilder.Entity<Product_store>()
+                 .HasOne(w => w.Product)
+                 .WithMany(s => s.Product_store)
+                 .HasForeignKey(w => w.Product_id);
+
+            // ** Store_Login
+            modelBuilder.Entity<Store_login>()
+                 .HasKey(x => new { x.Store_id, x.Login_id });
+
+            modelBuilder.Entity<Store_login>()
+                 .HasOne(w => w.Store)
+                 .WithMany(s => s.Store_login)
+                 .HasForeignKey(w => w.Store_id);
+
+            modelBuilder.Entity<Store_login>()
+                 .HasOne(w => w.Login)
+                 .WithMany(s => s.Store_login)
+                 .HasForeignKey(w => w.Login_id);
+
+            // ** StoreCategory_Store
+            modelBuilder.Entity<Store_category_store>()
+                 .HasKey(w => new { w.Store_id, w.Store_category_id });
+
+            modelBuilder.Entity<Store_category_store>()
+                 .HasOne(w => w.Store)
+                 .WithMany(s => s.Store_category_store)
+                 .HasForeignKey(w => w.Store_id);
+
+            modelBuilder.Entity<Store_category_store>()
+                .HasOne(w => w.Store_category)
+                .WithMany(sc => sc.Store_category_store)
+                .HasForeignKey(w => w.Store_category_id);
+
+
+            ///////////// Exemplos de uso
+            
+            //criação:
+            //var store = new Store { Name = "Minha Loja" };
+            //var category = new StoreCategory { Name = "Categoria 1" };
+
+            //var storeCategoryStore = new StoreCategoryStore
+            //{
+            //    Store = store,
+            //    StoreCategory = category
+            //};
+
+            //context.StoreCategoryStores.Add(storeCategoryStore);
+            //context.SaveChanges();
+
+            //consulta:
+            //var storesInCategory = context.StoreCategoryStores
+            //    .Where(sc => sc.StoreCategoryId == categoryId)
+            //    .Select(sc => sc.Store)
+            //    .ToList();
 
             OnModelCreatingPartial(modelBuilder);
         }

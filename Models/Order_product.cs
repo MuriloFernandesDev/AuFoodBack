@@ -2,15 +2,15 @@
 
 namespace AuFood.Models
 {
-    public partial class OrderProduct
+    public partial class Order_product
     {
         public int Quantity { get; set; }
 
         public double Price { get; set; }
 
-        public int OrderId { get; set; }
+        public int Order_id { get; set; }
 
-        public int ProductId { get; set; }
+        public int Product_id { get; set; }
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]

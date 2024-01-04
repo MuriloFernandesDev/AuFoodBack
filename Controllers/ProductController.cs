@@ -15,7 +15,7 @@ namespace AuFood.Controllers
 
         public string TimeDelivery { get; set; }
 
-        public ProductCategory? productCategory { get; set; }
+        public Product_category? productCategory { get; set; }
 
         public string Image { get; set; }
     }
@@ -61,19 +61,18 @@ namespace AuFood.Controllers
             var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, id);
 
             var ListProduct = await _context.Product
-                .Include(w => w.ProductCategory)
-                .Include(w => w.ProductsPrice)
+                .Include(w => w.Product_category)
+                .Include(w => w.Product_price)
                 .Where(w => ListProductOnStore.Contains(w.Id))
                 .Select(p => new ProductList
                 {
                     Id = p.Id,
                     Name = p.Name,
-                    Price = p.ProductsPrice
-                        .Where(pp => pp.DayWeek == DateTime.Now.DayOfWeek)
+                    Price = p.Product_price
+                        .Where(pp => pp.Day_week == DateTime.Now.DayOfWeek)
                         .Select(pp => (double?)pp.Price)
-                        .FirstOrDefault() ?? 0.00, // Use DefaultIfEmpty to provide a default value if no price is found
-                    TimeDelivery = p.TimeDelivery.ToString(),
-                    productCategory = p.ProductCategory,
+                        .FirstOrDefault() ?? 0.00, 
+                    productCategory = p.Product_category,
                     Image = p.Image
                 })
                 .ToListAsync();
@@ -94,14 +93,14 @@ namespace AuFood.Controllers
             pParams.q = pParams.q.ToLower();
 
             var ListProduct = _context.Product
-                .Include(w => w.ProductCategory)
-                .Include(w => w.ProductsPrice)
+                .Include(w => w.Product_category)
+                .Include(w => w.Product_price)
                 .Where(w => ListProductOnStore.Contains(w.Id))
                 .Select(p => new ProductList
                 {
                     Id = p.Id,
                     Name = p.Name,
-                    productCategory = p.ProductCategory,
+                    productCategory = p.Product_category,
                     Image = p.Image
                 })
                 .AsQueryable();
@@ -150,22 +149,21 @@ namespace AuFood.Controllers
         {
             var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, id);
 
-            var ListProduct = await _context.ProductCategory
+            var ListProduct = await _context.Product_category
                 .Include(w => w.Product)
-                    .ThenInclude(w => w.ProductsPrice)
+                    .ThenInclude(w => w.Product_price)
                 .Where(w => w.Product.Any(p => ListProductOnStore.Contains(p.Id)))
                 .Select(w => new ProductOnCategory
                 {
                     CategoryId = w.Id,
                     CategoryName = w.Name,
                     ListProduct = w.Product
-                    .Where(w => w.ProductsPrice.Any(pp => pp.DayWeek == DateTime.Now.DayOfWeek))
+                    .Where(w => w.Product_price.Any(pp => pp.Day_week == DateTime.Now.DayOfWeek))
                     .Select(p => new ProductList
                     {
                         Id = p.Id,
                         Name = p.Name,
-                        Price = p.ProductsPrice.Where(w => w.DayWeek == DateTime.Now.DayOfWeek).First().Price,
-                        TimeDelivery = p.TimeDelivery.ToString(),
+                        Price = p.Product_price.Where(w => w.Day_week == DateTime.Now.DayOfWeek).First().Price,
                         Image = p.Image
                     })
                     .ToList()
@@ -182,12 +180,12 @@ namespace AuFood.Controllers
         [HttpPost]
         public async Task<Product> Post(Product product)
         {
-            product.ProductStore = product
-                .ListStoreId
-                .Select(w => new ProductStore
+            product.Product_store = product
+                .List_store_id
+                .Select(w => new Product_store
                 {
                     Product = product,
-                    StoreId = w
+                    Store_id = w
                 })
                 .ToList();
 
@@ -204,7 +202,7 @@ namespace AuFood.Controllers
         public async Task<ActionResult<Product>> Update(Product product, int product_id)
         {
             var product_update = await _context.Product
-                .Include(w => w.ProductStore)
+                .Include(w => w.Product_store)
                 .Where(w => w.Id == product_id)
                 .FirstOrDefaultAsync();
 
@@ -213,13 +211,13 @@ namespace AuFood.Controllers
                 return NotFound();
             }
 
-            if(product != null && product.ProductsPrice!.Count > 0)
+            if(product != null && product.Product_price!.Count > 0)
             {
-                product.ProductsPrice = product.ProductsPrice.Select(w => new ProductPrice
+                product.Product_price = product.Product_price.Select(w => new Product_price
                 {
-                    DayWeek = w.DayWeek,
+                    Day_week = w.Day_week,
                     Price = (double)w.Price,
-                    ProductId = product_update.Id
+                    Product_id = product_update.Id
                 }).ToList();
             }
 
@@ -227,17 +225,17 @@ namespace AuFood.Controllers
 
             product_update.Image = "";
 
-            foreach (var store_id in product.ListStoreId)
+            foreach (var store_id in product.List_store_id)
             {
-                if (!product_update.ProductStore.Any(cc => cc.ProductId == store_id))
+                if (!product_update.Product_store.Any(cc => cc.Store_id == store_id))
                 {
-                    var new_product_store = new ProductStore
+                    var new_product_store = new Product_store
                     {
-                        ProductId = product_update.Id,
-                        StoreId = store_id
+                        Product_id = product_update.Id,
+                        Store_id = store_id
                     };
 
-                    product_update.ProductStore.Add(new_product_store);
+                    product_update.Product_store.Add(new_product_store);
                 }
             }
 
@@ -275,8 +273,8 @@ namespace AuFood.Controllers
         public async Task<ActionResult<Product>> GetProduct(int product_id)
         {
             var Product = await _context.Product
-                .Include(w => w.ProductStore)
-                .Include(w => w.ProductsPrice)
+                .Include(w => w.Product_store)
+                .Include(w => w.Product_price)
                 .Where(w => w.Id == product_id)
                 .FirstOrDefaultAsync();
 
@@ -285,7 +283,7 @@ namespace AuFood.Controllers
                 return NotFound();
             }
 
-            Product.ListStoreId = Product.ProductStore.Select(w => w.StoreId).ToList();
+            Product.List_store_id = Product.Product_store.Select(w => w.Store_id).ToList();
 
             return Product;
         }
