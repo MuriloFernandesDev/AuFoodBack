@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuFood.Controllers
 {
-    public class ProductList
+    public class Product_list
     {
         public string Name { get; set; }
 
@@ -13,20 +13,20 @@ namespace AuFood.Controllers
 
         public double Price { get; set; }
 
-        public string TimeDelivery { get; set; }
+        public string Time_delivery { get; set; }
 
-        public Product_category? productCategory { get; set; }
+        public Models.Product_category? product_category { get; set; }
 
         public string Image { get; set; }
     }
 
-    public class ProductOnCategory
+    public class Product_category
     {
-        public string CategoryName { get; set; }
+        public string Category_name { get; set; }
 
-        public int CategoryId { get; set; }
+        public int Category_id { get; set; }
 
-        public List<ProductList> ListProduct { get; set; }
+        public List<Product_list> List_product { get; set; }
     }
 
     public class ListInt
@@ -56,7 +56,7 @@ namespace AuFood.Controllers
         /// <param name="id">ID for Store</param>
         /// <returns></returns>
         [HttpGet("list_all/{id}")]
-        public async Task<IEnumerable<ProductList>> GetListProduct(int id)
+        public async Task<IEnumerable<Product_list>> GetListProduct(int id)
         {
             var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, id);
 
@@ -64,7 +64,7 @@ namespace AuFood.Controllers
                 .Include(w => w.Product_category)
                 .Include(w => w.Product_price)
                 .Where(w => ListProductOnStore.Contains(w.Id))
-                .Select(p => new ProductList
+                .Select(p => new Product_list
                 {
                     Id = p.Id,
                     Name = p.Name,
@@ -72,7 +72,7 @@ namespace AuFood.Controllers
                         .Where(pp => pp.Day_week == DateTime.Now.DayOfWeek)
                         .Select(pp => (double?)pp.Price)
                         .FirstOrDefault() ?? 0.00, 
-                    productCategory = p.Product_category,
+                    product_category = p.Product_category,
                     Image = p.Image
                 })
                 .ToListAsync();
@@ -87,7 +87,7 @@ namespace AuFood.Controllers
         /// <param name="pParams">Params for search</param>
         /// <returns></returns>
         [HttpGet("search_product_store/{store_id}")]
-        public async Task<IEnumerable<ProductList>> SearchProduct(int store_id, [FromQuery] IParams pParams)
+        public async Task<IEnumerable<Product_list>> SearchProduct(int store_id, [FromQuery] IParams pParams)
         {
             var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, store_id);
             pParams.q = pParams.q.ToLower();
@@ -96,11 +96,11 @@ namespace AuFood.Controllers
                 .Include(w => w.Product_category)
                 .Include(w => w.Product_price)
                 .Where(w => ListProductOnStore.Contains(w.Id))
-                .Select(p => new ProductList
+                .Select(p => new Product_list
                 {
                     Id = p.Id,
                     Name = p.Name,
-                    productCategory = p.Product_category,
+                    product_category = p.Product_category,
                     Image = p.Image
                 })
                 .AsQueryable();
@@ -110,7 +110,7 @@ namespace AuFood.Controllers
             //If you can't find a product by name, search for products by category name
             if (!ListFilterNameProduct.Any())
             {
-                ListProduct = ListProduct.Where(w => w.productCategory.Name.ToLower().Contains(pParams.q)).AsQueryable();
+                ListProduct = ListProduct.Where(w => w.product_category.Name.ToLower().Contains(pParams.q)).AsQueryable();
             }
             else
             {
@@ -145,7 +145,7 @@ namespace AuFood.Controllers
         /// <param name="id">ID for Store</param>
         /// <returns></returns>
         [HttpGet("list_all_on_category/{id}")]
-        public async Task<List<ProductOnCategory>> GetListProductOnCategory(int id)
+        public async Task<List<Product_category>> GetListProductOnCategory(int id)
         {
             var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, id);
 
@@ -153,13 +153,13 @@ namespace AuFood.Controllers
                 .Include(w => w.Product)
                     .ThenInclude(w => w.Product_price)
                 .Where(w => w.Product.Any(p => ListProductOnStore.Contains(p.Id)))
-                .Select(w => new ProductOnCategory
+                .Select(w => new Product_category
                 {
-                    CategoryId = w.Id,
-                    CategoryName = w.Name,
-                    ListProduct = w.Product
+                    Category_id = w.Id,
+                    Category_name = w.Name,
+                    List_product = w.Product
                     .Where(w => w.Product_price.Any(pp => pp.Day_week == DateTime.Now.DayOfWeek))
-                    .Select(p => new ProductList
+                    .Select(p => new Product_list
                     {
                         Id = p.Id,
                         Name = p.Name,

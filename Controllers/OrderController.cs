@@ -26,10 +26,17 @@ namespace AuFood.Controllers
         public List<product_id> products { get; set; }
     }
 
-    public class ListOrder : Order
+    public class IOrder : Order
     {
         public List<Product> Products { get; set; }
         public string Consumer_name { get; set; }
+    }
+
+    public class ListOrder
+    {
+        public int qtd { get; set; }
+        public OrderStatus status { get; set; }
+        public List<IOrder> Orders { get; set; }
     }
     
     [Route("api/[controller]")]
@@ -44,7 +51,7 @@ namespace AuFood.Controllers
         }
 
         [HttpGet("dash/list")]
-        public async Task<ActionResult<ListOrder>> ListOrder()
+        public async Task<ActionResult<List<ListOrder>>> ListOrder()
         {
             var orders = await _context.Order
                 .Include(w => w.Store)
@@ -53,19 +60,26 @@ namespace AuFood.Controllers
                 .Include(w => w.Order_product)
                     .ThenInclude(w => w.Product)
                     .ThenInclude(w => w.Product_price)
+                .GroupBy(w => w.Status)
                 .Select(w => new ListOrder
                 {
-                    Id = w.Id,
-                    Consumer_name = w.Consumer.Name,
-                    Date = w.Date,
-                    Products = w.Order_product.Select(op => new Product
+                    qtd = w.Select(w => w).Count(),
+                    status = w.Key.Value,
+                    Orders = w.Select(o =>  new IOrder
                     {
-                        Name = op.Product.Name,
-                        Price = op.Price
-                    }).ToList(),
-                    Store_id = w.Store_id,
-                    Total_price = w.Total_price,
-                    Status = w.Status
+                        Id = o.Id,
+                        Consumer_name = o.Consumer.Name,
+                        Date = o.Date,
+                        Products = o.Order_product.Select(op => new Product
+                        {
+                            Name = op.Product.Name,
+                            Price = op.Price
+                        }).ToList(),
+                        Store_id = o.Store_id,
+                        Total_price = o.Total_price,
+                        Status = o.Status,
+                        Delivery_method = o.Delivery_method
+                    }).ToList()
                 })
                 .ToListAsync();
 
