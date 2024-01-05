@@ -3,10 +3,17 @@ using AuFood.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Linq;
 
 namespace AuFood.Controllers
 {
 
+    public class Params
+    {
+        public string? q { get; set; }
+    }
+    
     public class product_id
     {
         public int id { get; set; }
@@ -26,17 +33,11 @@ namespace AuFood.Controllers
         public List<product_id> products { get; set; }
     }
 
-    public class IOrder : Order
-    {
-        public List<Product> Products { get; set; }
-        public string Consumer_name { get; set; }
-    }
-
     public class ListOrder
     {
         public int qtd { get; set; }
         public OrderStatus status { get; set; }
-        public List<IOrder> Orders { get; set; }
+        public List<Order> Orders { get; set; }
     }
     
     [Route("api/[controller]")]
@@ -51,50 +52,50 @@ namespace AuFood.Controllers
         }
 
         [HttpGet("dash/list")]
-        public async Task<ActionResult<List<ListOrder>>> ListOrder()
+        public async Task<ActionResult<List<ListOrder>>> ListOrder([FromQuery] Params pParams)
         {
-            var orders = await _context.Order
+            var vQuery = _context.Order
                 .Include(w => w.Store)
                 .Include(w => w.Consumer)
                 .Include(w => w.Consumer_address)
                 .Include(w => w.Order_product)
                     .ThenInclude(w => w.Product)
                     .ThenInclude(w => w.Product_price)
+                .AsQueryable();
+
+            //Filtrar
+            if(pParams != null)
+            {
+                if (!pParams.q.IsNullOrEmpty())
+                {
+                    vQuery = vQuery
+                        .Where(w => !pParams.q.IsNullOrEmpty() ? (w.Consumer.Name.Contains(pParams.q) || w.Id.ToString().Contains(pParams.q)) : true)
+                        .AsQueryable();
+                }
+            }
+
+            var orders = await vQuery
                 .GroupBy(w => w.Status)
                 .Select(w => new ListOrder
                 {
                     qtd = w.Select(w => w).Count(),
                     status = w.Key.Value,
-                    Orders = w.Select(o =>  new IOrder
-                    {
-                        Id = o.Id,
-                        Consumer_name = o.Consumer.Name,
-                        Date = o.Date,
-                        Products = o.Order_product.Select(op => new Product
-                        {
-                            Name = op.Product.Name,
-                            Price = op.Price
-                        }).ToList(),
-                        Store_id = o.Store_id,
-                        Total_price = o.Total_price,
-                        Status = o.Status,
-                        Delivery_method = o.Delivery_method
-                    }).ToList()
+                    Orders = w.Select(o => o).ToList()
                 })
                 .ToListAsync();
 
             return Ok(orders);
         }
 
-        [HttpPut("dash/cancel/{id}")]
-        public async Task<ActionResult> CancelOrder(int id)
+        [HttpPut("dash/status/{id}")]
+        public async Task<ActionResult> CancelOrder(int id, Order order_status)
         {
             var order = await _context.Order.FindAsync(id);
 
             if (order == null) 
                 return NotFound();
 
-            order.Status = OrderStatus.Canceled;
+            order.Status = order_status.Status;
 
             await _context.SaveChangesAsync();
 
