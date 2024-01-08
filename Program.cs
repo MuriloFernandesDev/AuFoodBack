@@ -1,7 +1,13 @@
 using AuFood.Models;
+using AuFood.Auxiliary;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var key = Encoding.ASCII.GetBytes(TokenService.Secret);
 
 // Add services to the container.
 
@@ -14,6 +20,28 @@ builder.Services.AddSwaggerGen();
 //builder.Services.AddDbContext<dbContext>(options => options.UseMySql("server=localhost;database=teste;user=root;password=123456;"));
 
 builder.Services.AddDbContext<_DbContext>();
+
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(x =>
+{
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        RequireExpirationTime = false,
+    };
+});
 
 var app = builder.Build();
 
@@ -33,6 +61,8 @@ app.UseCors(x => x
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseAuthentication();
 
 app.MapControllers();
 

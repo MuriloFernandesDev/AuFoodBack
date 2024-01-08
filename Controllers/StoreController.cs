@@ -37,7 +37,7 @@ namespace AuFood.Controllers
             return Store;
         }
 
-        [HttpGet("list_all")]
+        [HttpGet("store/list_all")]
         public async Task<IEnumerable<StoreListAll>> GetListStoreAll()
         {
             //remover todo espaço de w.Name e name e colocar -
@@ -96,7 +96,7 @@ namespace AuFood.Controllers
             return storeCategory;
         }
 
-        [HttpGet("dash/list_all")]
+        [HttpGet("list_all")]
         public async Task<IEnumerable<Store>> ListAll()
         {
             var list_all = await _context.Store
@@ -105,7 +105,7 @@ namespace AuFood.Controllers
             return list_all;
         }
 
-        [HttpGet("dash/{store_id}")]
+        [HttpGet("{store_id}")]
         public async Task<Store> GetStoreByName(int store_id)
         {
             //remover todo espaço de w.Name e name e colocar -

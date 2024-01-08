@@ -44,7 +44,7 @@ namespace AuFood.Controllers
         /// </summary>
         /// <param name="store_id">ID from Store</param>
         /// <returns></returns>
-        [HttpGet("get_consumer_by_phone/{phone}")]
+        [HttpGet("store/get_consumer_by_phone/{phone}")]
         public async Task<ActionResult<Consumer>> GetConsumer(string phone)
         {
             var consumer = await _context.Consumer
@@ -72,7 +72,7 @@ namespace AuFood.Controllers
         /// </summary>
         /// <param name="consumer_id">ID from Consumer</param>
         /// <returns></returns>
-        [HttpPost("confirm_consumer/{consumer_id}")]
+        [HttpPost("store/confirm_consumer/{consumer_id}")]
         public async Task<ActionResult<bool>> ConfirmConsumer(int consumer_id)
         {
             var consumer = await _context.Consumer.FindAsync(consumer_id);

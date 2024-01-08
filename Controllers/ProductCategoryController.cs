@@ -45,7 +45,7 @@ namespace AuFood.Controllers
         /// </summary>
         /// <param name="store_id">ID for Store</param>
         /// <returns></returns>
-        [HttpGet("list_categories_store/{store_id}")]
+        [HttpGet("store/list_categories_store/{store_id}")]
         public async Task<List<Models.Product_category>> Post(int store_id)
         {
             var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, store_id);

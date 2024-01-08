@@ -13,6 +13,12 @@ namespace AuFood.Controllers
     {
         public string? q { get; set; }
     }
+
+    public class ParamsOrderList : Params
+    {
+        public bool delivery { get; set; }
+        public bool pickup { get; set; }
+    }
     
     public class product_id
     {
@@ -51,8 +57,8 @@ namespace AuFood.Controllers
             _context = context;
         }
 
-        [HttpGet("dash/list")]
-        public async Task<ActionResult<List<ListOrder>>> ListOrder([FromQuery] Params pParams)
+        [HttpGet("list")]
+        public async Task<ActionResult<List<ListOrder>>> ListOrder([FromQuery] ParamsOrderList pParams)
         {
             var vQuery = _context.Order
                 .Include(w => w.Store)
@@ -72,6 +78,20 @@ namespace AuFood.Controllers
                         .Where(w => !pParams.q.IsNullOrEmpty() ? (w.Consumer.Name.Contains(pParams.q) || w.Id.ToString().Contains(pParams.q)) : true)
                         .AsQueryable();
                 }
+
+                if(pParams.delivery == false)
+                {
+                    vQuery = vQuery
+                        .Where(w => w.Delivery_method != DeliveryMethod.Delivery)
+                        .AsQueryable();
+                }
+
+                if (pParams.pickup == false)
+                {
+                    vQuery = vQuery
+                        .Where(w => w.Delivery_method != DeliveryMethod.Pickup)
+                        .AsQueryable();
+                }
             }
 
             var orders = await vQuery
@@ -87,7 +107,7 @@ namespace AuFood.Controllers
             return Ok(orders);
         }
 
-        [HttpPut("dash/status/{id}")]
+        [HttpPut("status/{id}")]
         public async Task<ActionResult> CancelOrder(int id, Order order_status)
         {
             var order = await _context.Order.FindAsync(id);
@@ -102,7 +122,7 @@ namespace AuFood.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        [HttpPost("store")]
         public async Task<ActionResult<Order>> Post(newOrder order)
         {
             var ConsumerStore = await _context.Consumer_store

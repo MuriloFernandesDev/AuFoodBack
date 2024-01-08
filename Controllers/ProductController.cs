@@ -55,7 +55,7 @@ namespace AuFood.Controllers
         /// </summary>
         /// <param name="id">ID for Store</param>
         /// <returns></returns>
-        [HttpGet("list_all/{id}")]
+        [HttpGet("store/list_all/{id}")]
         public async Task<IEnumerable<Product_list>> GetListProduct(int id)
         {
             var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, id);
@@ -86,7 +86,7 @@ namespace AuFood.Controllers
         /// <param name="store_id">ID for Store</param>
         /// <param name="pParams">Params for search</param>
         /// <returns></returns>
-        [HttpGet("search_product_store/{store_id}")]
+        [HttpGet("store/search_product_store/{store_id}")]
         public async Task<IEnumerable<Product_list>> SearchProduct(int store_id, [FromQuery] IParams pParams)
         {
             var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, store_id);
@@ -144,7 +144,7 @@ namespace AuFood.Controllers
         /// </summary>
         /// <param name="id">ID for Store</param>
         /// <returns></returns>
-        [HttpGet("list_all_on_category/{id}")]
+        [HttpGet("store/list_all_on_category/{id}")]
         public async Task<List<Product_category>> GetListProductOnCategory(int id)
         {
             var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, id);
@@ -293,7 +293,7 @@ namespace AuFood.Controllers
         /// </summary>
         /// <param name="id">ID for Store</param>
         /// <returns></returns>
-        [HttpGet("dash/list_all")]
+        [HttpGet("list_all")]
         public async Task<IEnumerable<Product>> GetListProduct()
         {
             var ListProduct = await _context.Product
