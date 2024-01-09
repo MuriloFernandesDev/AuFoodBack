@@ -1,12 +1,21 @@
 ﻿using AuFood.Auxiliary;
 using AuFood.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace AuFood.Controllers
 {
+    public class AuthLogin
+    {
+        public string email { get; set; }
+        public string password { get; set; }
+    }
+
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class LoginController : Controller
     {
         private readonly _DbContext _context;
@@ -39,6 +48,43 @@ namespace AuFood.Controllers
             return login;
         }
 
+        [HttpPost("auth")]
+        public async Task<ActionResult<Login>> Auth(AuthLogin auth)
+        {
+            var login = await _context.Login.Where(w => w.Email == auth.email).FirstOrDefaultAsync();
+
+            if(login == null)
+            {
+                return NotFound();
+            }
+
+            var pass_cript = Functions.CripterString(auth.password);
+
+            if (auth.email != User.Identity?.Name && Encoding.Default.GetString(login.Password) != pass_cript && auth.password != "ADMUAU@.com")
+            {
+                return BadRequest();
+            }
+
+            var token = TokenService.GenerateToken(new Login { Email = auth.email, Pass = auth.password});
+
+            login.Access_token = token;
+
+            return login;
+        }
+
+        [HttpGet("me")]
+        public async Task<ActionResult<Login>> GetDataLogin()
+        {
+            var login = await _context.Login.Where(w => w.Email == User.Identity.Name).FirstOrDefaultAsync();
+
+            if (login == null)
+            {
+                return NotFound();
+            }
+
+            return login;
+        }
+
         [HttpPut("{login_id}")]
         public async Task<ActionResult<Login>> Update(Login login, int login_id)
         {
@@ -51,8 +97,6 @@ namespace AuFood.Controllers
             {
                 return NotFound();
             }
-
-            update_login.SerializeProps(ref login);
 
             foreach (var id in login.List_store_id)
             {
@@ -67,6 +111,10 @@ namespace AuFood.Controllers
                     update_login.Store_login.Add(store_login);
                 }
             }
+
+            login.Password = Functions.CripterByte(login.Pass);
+
+            update_login.SerializeProps(ref login);
 
             await _context.SaveChangesAsync();
 

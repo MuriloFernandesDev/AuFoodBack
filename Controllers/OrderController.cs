@@ -1,5 +1,6 @@
 ﻿using AuFood.Auxiliary;
 using AuFood.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -48,6 +49,7 @@ namespace AuFood.Controllers
     
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class OrderController : ControllerBase
     {
         private readonly _DbContext _context;
@@ -123,6 +125,7 @@ namespace AuFood.Controllers
         }
 
         [HttpPost("store")]
+        [AllowAnonymous]
         public async Task<ActionResult<Order>> Post(newOrder order)
         {
             var ConsumerStore = await _context.Consumer_store

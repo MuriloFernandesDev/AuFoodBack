@@ -1,5 +1,6 @@
 ﻿using AuFood.Auxiliary;
 using AuFood.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,6 +42,7 @@ namespace AuFood.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductController : Controller
     {
         private readonly _DbContext _context;
@@ -55,7 +57,8 @@ namespace AuFood.Controllers
         /// </summary>
         /// <param name="id">ID for Store</param>
         /// <returns></returns>
-        [HttpGet("store/list_all/{id}")]
+        [AllowAnonymous]
+        [HttpGet("list_all/{id}")]
         public async Task<IEnumerable<Product_list>> GetListProduct(int id)
         {
             var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, id);
@@ -86,7 +89,8 @@ namespace AuFood.Controllers
         /// <param name="store_id">ID for Store</param>
         /// <param name="pParams">Params for search</param>
         /// <returns></returns>
-        [HttpGet("store/search_product_store/{store_id}")]
+        [AllowAnonymous]
+        [HttpGet("search_product_store/{store_id}")]
         public async Task<IEnumerable<Product_list>> SearchProduct(int store_id, [FromQuery] IParams pParams)
         {
             var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, store_id);
@@ -144,7 +148,8 @@ namespace AuFood.Controllers
         /// </summary>
         /// <param name="id">ID for Store</param>
         /// <returns></returns>
-        [HttpGet("store/list_all_on_category/{id}")]
+        [AllowAnonymous]
+        [HttpGet("list_all_on_category/{id}")]
         public async Task<List<Product_category>> GetListProductOnCategory(int id)
         {
             var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, id);

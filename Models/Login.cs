@@ -46,7 +46,7 @@ namespace AuFood.Models
         public List<int>? List_store_id { get; set; }
 
         [NotMapped]
-        public string? accessToken { get; set; }
+        public string? Access_token { get; set; }
 
         public DateTime? Created { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using AuFood.Auxiliary;
 using AuFood.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -13,6 +14,8 @@ namespace AuFood.Controllers
     }
 
     [Route("api/[controller]")]
+    [ApiController]
+    [Authorize]
     public class ConsumerController : Controller
     {
         private readonly _DbContext _context;
@@ -44,7 +47,8 @@ namespace AuFood.Controllers
         /// </summary>
         /// <param name="store_id">ID from Store</param>
         /// <returns></returns>
-        [HttpGet("store/get_consumer_by_phone/{phone}")]
+        [AllowAnonymous]
+        [HttpGet("get_consumer_by_phone/{phone}")]
         public async Task<ActionResult<Consumer>> GetConsumer(string phone)
         {
             var consumer = await _context.Consumer
@@ -72,7 +76,8 @@ namespace AuFood.Controllers
         /// </summary>
         /// <param name="consumer_id">ID from Consumer</param>
         /// <returns></returns>
-        [HttpPost("store/confirm_consumer/{consumer_id}")]
+        [AllowAnonymous]
+        [HttpPost("confirm_consumer/{consumer_id}")]
         public async Task<ActionResult<bool>> ConfirmConsumer(int consumer_id)
         {
             var consumer = await _context.Consumer.FindAsync(consumer_id);
@@ -92,6 +97,7 @@ namespace AuFood.Controllers
         /// <param name="consumer_id">ID from Consumer</param>
         /// <param name="code">Code</param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost("confirm_consumer_code/{consumer_id}/{code}")]
         public async Task<ActionResult<Consumer>> ConfirmConsumer(int consumer_id, string code)
         {

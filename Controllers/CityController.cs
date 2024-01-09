@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AuFood.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AuFood.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CityController : Controller
     {
         private readonly _DbContext _context;

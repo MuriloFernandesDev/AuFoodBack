@@ -1,5 +1,6 @@
 ﻿using AuFood.Auxiliary;
 using AuFood.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -15,6 +16,7 @@ namespace AuFood.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class StoreController : Controller
     {
         private readonly _DbContext _context;
@@ -37,7 +39,8 @@ namespace AuFood.Controllers
             return Store;
         }
 
-        [HttpGet("store/list_all")]
+        [AllowAnonymous]
+        [HttpGet("list_all")]
         public async Task<IEnumerable<StoreListAll>> GetListStoreAll()
         {
             //remover todo espaço de w.Name e name e colocar -

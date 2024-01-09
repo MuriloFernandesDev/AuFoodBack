@@ -1,4 +1,5 @@
 ﻿using AuFood.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,7 @@ namespace AuFood.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ListController : Controller
     {
         private readonly _DbContext _context;

@@ -1,5 +1,6 @@
 ﻿using AuFood.Auxiliary;
 using AuFood.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,7 @@ namespace AuFood.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductCategoryController : Controller
     {
 
@@ -45,7 +47,7 @@ namespace AuFood.Controllers
         /// </summary>
         /// <param name="store_id">ID for Store</param>
         /// <returns></returns>
-        [HttpGet("store/list_categories_store/{store_id}")]
+        [HttpGet("list_categories_store/{store_id}")]
         public async Task<List<Models.Product_category>> Post(int store_id)
         {
             var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, store_id);
