@@ -140,43 +140,36 @@ namespace AuFood.Controllers
 
             return ListProduct;
         }
+        
+        //[AllowAnonymous]
+        //[HttpGet("list_all_on_category/{id}")]
+        //public async Task<List<Product_category>> GetListProductOnCategory(int id)
+        //{
+        //    var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, id);
 
-        /// <summary>
-        /// Method for Retrieve all products by category.
-        /// Fetch the price for each product determined by the current day of the week. 
-        /// If there is no price registered for the current day of the week, do not include the product to avoid displaying a zero price.
-        /// </summary>
-        /// <param name="id">ID for Store</param>
-        /// <returns></returns>
-        [AllowAnonymous]
-        [HttpGet("list_all_on_category/{id}")]
-        public async Task<List<Product_category>> GetListProductOnCategory(int id)
-        {
-            var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, id);
+        //    var ListProduct = await _context.Product_category
+        //        .Include(w => w.Product)
+        //            .ThenInclude(w => w.Product_price)
+        //        .Where(w => w.Product.Any(p => ListProductOnStore.Contains(p.Id)))
+        //        .Select(w => new Product_category
+        //        {
+        //            Category_id = w.Id,
+        //            Category_name = w.Name,
+        //            List_product = w.Product
+        //            .Where(w => w.Product_price.Any(pp => pp.Day_week == DateTime.Now.DayOfWeek))
+        //            .Select(p => new Product_list
+        //            {
+        //                Id = p.Id,
+        //                Name = p.Name,
+        //                Price = p.Product_price.Where(w => w.Day_week == DateTime.Now.DayOfWeek).First().Price,
+        //                Image = p.Image
+        //            })
+        //            .ToList()
+        //        })
+        //        .ToListAsync();
 
-            var ListProduct = await _context.Product_category
-                .Include(w => w.Product)
-                    .ThenInclude(w => w.Product_price)
-                .Where(w => w.Product.Any(p => ListProductOnStore.Contains(p.Id)))
-                .Select(w => new Product_category
-                {
-                    Category_id = w.Id,
-                    Category_name = w.Name,
-                    List_product = w.Product
-                    .Where(w => w.Product_price.Any(pp => pp.Day_week == DateTime.Now.DayOfWeek))
-                    .Select(p => new Product_list
-                    {
-                        Id = p.Id,
-                        Name = p.Name,
-                        Price = p.Product_price.Where(w => w.Day_week == DateTime.Now.DayOfWeek).First().Price,
-                        Image = p.Image
-                    })
-                    .ToList()
-                })
-                .ToListAsync();
-
-            return ListProduct;
-        }
+        //    return ListProduct;
+        //}
 
         /// <summary>
         /// Method for create new Product

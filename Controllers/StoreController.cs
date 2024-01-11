@@ -40,7 +40,7 @@ namespace AuFood.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("list_all")]
+        [HttpGet("list_all_store")]
         public async Task<IEnumerable<StoreListAll>> GetListStoreAll()
         {
             //remover todo espaço de w.Name e name e colocar -
