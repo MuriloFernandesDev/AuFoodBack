@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using AuFood.Models;
 
 namespace AuFood.Models
-{                              
+{
     public partial class _DbContext : DbContext
     {
         public DbSet<Product> Product { get; set; }

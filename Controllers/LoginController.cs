@@ -48,6 +48,7 @@ namespace AuFood.Controllers
             return login;
         }
 
+        [AllowAnonymous]
         [HttpPost("auth")]
         public async Task<ActionResult<Login>> Auth(AuthLogin auth)
         {
@@ -65,14 +66,16 @@ namespace AuFood.Controllers
                 return BadRequest();
             }
 
-            var token = TokenService.GenerateToken(new Login { Email = auth.email, Pass = auth.password});
+            var token = TokenService.GenerateToken(new Login { Email = auth.email });
 
-            login.Access_token = token;
+            login.Access_token = token.access_token;
+            login.Password = null;
 
             return login;
         }
 
-        [HttpGet("me")]
+        [AllowAnonymous]
+        [HttpGet("refresh")]
         public async Task<ActionResult<Login>> GetDataLogin()
         {
             var login = await _context.Login.Where(w => w.Email == User.Identity.Name).FirstOrDefaultAsync();
@@ -81,6 +84,12 @@ namespace AuFood.Controllers
             {
                 return NotFound();
             }
+
+            var token = TokenService.GenerateToken(new Login { Email = login.Email });
+
+            login.Access_token = token.access_token;
+
+            login.Password = null;
 
             return login;
         }

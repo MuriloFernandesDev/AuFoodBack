@@ -48,6 +48,9 @@ namespace AuFood.Models
         [NotMapped]
         public string? Access_token { get; set; }
 
+        [NotMapped]
+        public string? Refresh_token { get; set; }
+
         public DateTime? Created { get; set; }
 
         /// <summary>
