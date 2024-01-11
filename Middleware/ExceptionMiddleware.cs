@@ -22,14 +22,13 @@ public class ExceptionMiddleware
         if (!string.IsNullOrEmpty(token))
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(TokenService.Secret);
 
             try
             {
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(TokenService.Secret)),
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ValidateLifetime = true,

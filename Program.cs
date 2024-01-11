@@ -21,7 +21,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "API U-All Solutions",
+        Title = "API",
         Version = "v1"
     });
 
