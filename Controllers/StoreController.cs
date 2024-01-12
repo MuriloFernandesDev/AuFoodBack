@@ -134,7 +134,7 @@ namespace AuFood.Controllers
                 return NotFound();
 
             if (!vStoresID.Contains(Store.Id))
-                return Unauthorized(new { msg = "Não possui permissão para visualizar essa loja." });
+                return Unauthorized();
 
             return Store;
         }

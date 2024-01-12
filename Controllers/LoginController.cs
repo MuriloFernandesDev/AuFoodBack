@@ -110,7 +110,7 @@ namespace AuFood.Controllers
                 return NotFound();
             }
 
-            if (update_login.Store_login.Any(w => vStoresID.Contains(w.Store_id)))
+            if (!update_login.Store_login.Any(w => vStoresID.Contains(w.Store_id)))
             {
                 return Unauthorized();
             }
@@ -177,7 +177,7 @@ namespace AuFood.Controllers
                 return NotFound();
             }
 
-            if (login.Store_login.Any(w => vStoresID.Contains(w.Store_id)))
+            if (!login.Store_login.Any(w => vStoresID.Contains(w.Store_id)))
             {
                 return Unauthorized();
             }
@@ -203,7 +203,7 @@ namespace AuFood.Controllers
                 return NotFound();
             }
 
-            if (login_remove.Store_login.Any(w => vStoresID.Contains(w.Store_id)))
+            if (!login_remove.Store_login.Any(w => vStoresID.Contains(w.Store_id)))
             {
                 return Unauthorized();
             }
