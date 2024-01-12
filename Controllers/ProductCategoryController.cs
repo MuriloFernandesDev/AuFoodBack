@@ -42,11 +42,7 @@ namespace AuFood.Controllers
             return listCategory;
         }
 
-        /// <summary>
-        /// Get list all Product Category
-        /// </summary>
-        /// <param name="store_id">ID for Store</param>
-        /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("list_categories_store/{store_id}")]
         public async Task<List<Models.Product_category>> Post(int store_id)
         {

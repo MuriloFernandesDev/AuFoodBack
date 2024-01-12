@@ -1,4 +1,5 @@
-﻿using AuFood.Models;
+﻿using AuFood.Auxiliary;
+using AuFood.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -29,7 +30,11 @@ namespace AuFood.Controllers
         [HttpGet("store")]
         public async Task<IEnumerable<LabelValue>> ListStore()
         {
+            //Get Stores id Permission
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
+
             var ListStore = await _context.Store
+                .Where(w => vStoresID.Contains(w.Id))
                 .Select(w => new LabelValue
                 {
                     Label = w.Name,
@@ -40,6 +45,7 @@ namespace AuFood.Controllers
             return ListStore;
         }
 
+        [AllowAnonymous]
         [HttpGet("productCategory")]
         public async Task<IEnumerable<LabelValue>> ListProductCategory()
         {

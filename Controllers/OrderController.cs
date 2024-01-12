@@ -62,6 +62,9 @@ namespace AuFood.Controllers
         [HttpGet("list")]
         public async Task<ActionResult<List<ListOrder>>> ListOrder([FromQuery] ParamsOrderList pParams)
         {
+            //Get Stores id Permission
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
+
             var vQuery = _context.Order
                 .Include(w => w.Store)
                 .Include(w => w.Consumer)
@@ -69,6 +72,7 @@ namespace AuFood.Controllers
                 .Include(w => w.Order_product)
                     .ThenInclude(w => w.Product)
                     .ThenInclude(w => w.Product_price)
+                .Where(w => vStoresID.Contains(w.Store_id))
                 .AsQueryable();
 
             //Filtrar
@@ -112,10 +116,16 @@ namespace AuFood.Controllers
         [HttpPut("status/{id}")]
         public async Task<ActionResult> CancelOrder(int id, Order order_status)
         {
+            //Get Stores id Permission
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
+
             var order = await _context.Order.FindAsync(id);
 
             if (order == null) 
                 return NotFound();
+
+            if (!vStoresID.Contains(order.Store_id))
+                return Unauthorized();
 
             order.Status = order_status.Status;
 
@@ -124,7 +134,7 @@ namespace AuFood.Controllers
             return Ok();
         }
 
-        [HttpPost("store")]
+        [HttpPost]
         [AllowAnonymous]
         public async Task<ActionResult<Order>> Post(newOrder order)
         {

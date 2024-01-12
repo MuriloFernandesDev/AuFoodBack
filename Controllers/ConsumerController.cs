@@ -141,7 +141,7 @@ namespace AuFood.Controllers
                   }
                 };
 
-            await _context.Consumer.AddAsync(newConsumer);
+            _context.Consumer.Add(newConsumer);
             await _context.SaveChangesAsync();
 
             return newConsumer;

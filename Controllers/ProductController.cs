@@ -51,12 +51,7 @@ namespace AuFood.Controllers
         {
             _context = context;
         }
-
-        /// <summary>
-        /// Method for get list all products
-        /// </summary>
-        /// <param name="id">ID for Store</param>
-        /// <returns></returns>
+        
         [AllowAnonymous]
         [HttpGet("list_all/{id}")]
         public async Task<IEnumerable<Product_list>> GetListProduct(int id)
@@ -82,13 +77,7 @@ namespace AuFood.Controllers
 
             return ListProduct;
         }
-
-        /// <summary>
-        /// Method for search for product's
-        /// </summary>
-        /// <param name="store_id">ID for Store</param>
-        /// <param name="pParams">Params for search</param>
-        /// <returns></returns>
+        
         [AllowAnonymous]
         [HttpGet("search_product_store/{store_id}")]
         public async Task<IEnumerable<Product_list>> SearchProduct(int store_id, [FromQuery] IParams pParams)
@@ -123,58 +112,7 @@ namespace AuFood.Controllers
 
             return await ListProduct.ToListAsync();
         }
-
-        /// <summary>
-        /// Method for get product's on order store
-        /// </summary>
-        /// <param name="store_id">ID for Store</param>
-        /// <returns></returns>
-        [HttpGet("list_product_order/{store_id}")]
-        public async Task<IEnumerable<Product>> GetListProduct([FromQuery] ListInt pParams, int store_id)
-        {
-            var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, store_id);
-
-            var ListProduct = await _context.Product
-                .Where(w => pParams.list_id.Contains(w.Id) && ListProductOnStore.Contains(w.Id))
-                .ToListAsync();
-
-            return ListProduct;
-        }
         
-        //[AllowAnonymous]
-        //[HttpGet("list_all_on_category/{id}")]
-        //public async Task<List<Product_category>> GetListProductOnCategory(int id)
-        //{
-        //    var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, id);
-
-        //    var ListProduct = await _context.Product_category
-        //        .Include(w => w.Product)
-        //            .ThenInclude(w => w.Product_price)
-        //        .Where(w => w.Product.Any(p => ListProductOnStore.Contains(p.Id)))
-        //        .Select(w => new Product_category
-        //        {
-        //            Category_id = w.Id,
-        //            Category_name = w.Name,
-        //            List_product = w.Product
-        //            .Where(w => w.Product_price.Any(pp => pp.Day_week == DateTime.Now.DayOfWeek))
-        //            .Select(p => new Product_list
-        //            {
-        //                Id = p.Id,
-        //                Name = p.Name,
-        //                Price = p.Product_price.Where(w => w.Day_week == DateTime.Now.DayOfWeek).First().Price,
-        //                Image = p.Image
-        //            })
-        //            .ToList()
-        //        })
-        //        .ToListAsync();
-
-        //    return ListProduct;
-        //}
-
-        /// <summary>
-        /// Method for create new Product
-        /// </summary>
-        /// <returns></returns>
         [HttpPost]
         public async Task<Product> Post(Product product)
         {
@@ -199,15 +137,19 @@ namespace AuFood.Controllers
         [HttpPut("{product_id}")]
         public async Task<ActionResult<Product>> Update(Product product, int product_id)
         {
+            //Get Stores id Permission
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
+
             var product_update = await _context.Product
                 .Include(w => w.Product_store)
                 .Where(w => w.Id == product_id)
                 .FirstOrDefaultAsync();
 
             if (product_update == null)
-            {
                 return NotFound();
-            }
+
+            if (!product_update.Product_store.Any(w => vStoresID.Contains(w.Store_id)))
+                return Unauthorized();
 
             if(product != null && product.Product_price!.Count > 0)
             {
@@ -249,12 +191,16 @@ namespace AuFood.Controllers
         [HttpDelete("{product_id}")]
         public async Task<ActionResult<Product>> Delete(int product_id)
         {
+            //Get Stores id Permission
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
+
             var Product = await _context.Product.FindAsync(product_id);
 
             if(Product == null)
-            {
                 return NotFound();
-            }
+
+            if (!Product.Product_store.Any(w => vStoresID.Contains(w.Store_id)))
+                return Unauthorized();
 
             _context.Product.Remove(Product);
 
@@ -263,13 +209,12 @@ namespace AuFood.Controllers
             return Product;
         }
 
-        /// <summary>
-        /// Method for create new Product
-        /// </summary>
-        /// <returns></returns>
         [HttpGet("{product_id}")]
         public async Task<ActionResult<Product>> GetProduct(int product_id)
         {
+            //Get Stores id Permission
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
+
             var Product = await _context.Product
                 .Include(w => w.Product_store)
                 .Include(w => w.Product_price)
@@ -277,24 +222,25 @@ namespace AuFood.Controllers
                 .FirstOrDefaultAsync();
 
             if(Product == null)
-            {
                 return NotFound();
-            }
+
+            if(!Product.Product_store.Any(w => vStoresID.Contains(w.Store_id)))
+                return Unauthorized();
 
             Product.List_store_id = Product.Product_store.Select(w => w.Store_id).ToList();
 
             return Product;
         }
 
-        /// <summary>
-        /// Method for get list all products
-        /// </summary>
-        /// <param name="id">ID for Store</param>
-        /// <returns></returns>
         [HttpGet("list_all")]
         public async Task<IEnumerable<Product>> GetListProduct()
         {
+            //Get Stores id Permission
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
+
             var ListProduct = await _context.Product
+                .Include(w => w.Product_store)
+                .Where(w => w.Product_store.Any(p => vStoresID.Contains(p.Store_id)))
                 .ToListAsync();
 
             return ListProduct;

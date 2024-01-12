@@ -26,15 +26,18 @@ namespace AuFood.Controllers
             _context = context;
         }
 
-        [HttpGet("{name}")]
-        public async Task<Store> GetStoreByName(string name)
+        [AllowAnonymous]
+        [HttpGet("search/{name}")]
+        public async Task<ActionResult<Store>> GetStoreByName(string name)
         {
-            //remover todo espaço de w.Name e name e colocar -
             var Store = await _context.Store
                 .Include(w => w.City)
                     .ThenInclude(w => w.State)
                 .Where(w => w.Name.Replace(" ", "-").ToLower() == name.Replace(" ", "-").ToLower())
                 .SingleOrDefaultAsync();
+
+            if (Store == null)
+                return NotFound();
 
             return Store;
         }
@@ -43,7 +46,6 @@ namespace AuFood.Controllers
         [HttpGet("list_all_store")]
         public async Task<IEnumerable<StoreListAll>> GetListStoreAll()
         {
-            //remover todo espaço de w.Name e name e colocar -
             var Store = await _context.Store
                 .Include(w => w.City)
                     .ThenInclude(w => w.State)
@@ -73,15 +75,19 @@ namespace AuFood.Controllers
         [HttpPut("{store_id}")]
         public async Task<ActionResult<Store>> CreateStore(Store newStore, int store_id)
         {
+            //Get Stores id Permission
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, null);
+
             var store = await _context.Store.FindAsync(store_id);
+
+            if (store == null)
+                return NotFound();
+
+            if (!vStoresID.Contains(store.Id))
+                return Unauthorized(new { msg = "Não possui permissão para essa loja." });
 
             newStore.Background_image = "https://images3.alphacoders.com/131/1313839.jpg";
             newStore.Logo = "https://img.freepik.com/vetores-premium/vetor-do-logotipo-do-burger-art-design_260747-237.jpg";
-
-            if (store == null)
-            {
-                return NotFound();
-            }
 
             newStore.SerializeProps(ref store);
 
@@ -102,21 +108,33 @@ namespace AuFood.Controllers
         [HttpGet("list_all")]
         public async Task<IEnumerable<Store>> ListAll()
         {
+            //Get Stores id Permission
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
+
             var list_all = await _context.Store
+                .Where(w => vStoresID.Contains(w.Id))
                 .ToListAsync();
 
             return list_all;
         }
 
         [HttpGet("{store_id}")]
-        public async Task<Store> GetStoreByName(int store_id)
+        public async Task<ActionResult<Store>> GetStore(int store_id)
         {
-            //remover todo espaço de w.Name e name e colocar -
+            //Get Stores id Permission
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
+
             var Store = await _context.Store
                 .Include(w => w.City)
                     .ThenInclude(w => w.State)
                 .Where(w => w.Id == store_id)
                 .SingleOrDefaultAsync();
+
+            if(Store == null)
+                return NotFound();
+
+            if (!vStoresID.Contains(Store.Id))
+                return Unauthorized(new { msg = "Não possui permissão para visualizar essa loja." });
 
             return Store;
         }

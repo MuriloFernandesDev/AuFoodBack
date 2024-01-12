@@ -97,6 +97,9 @@ namespace AuFood.Controllers
         [HttpPut("{login_id}")]
         public async Task<ActionResult<Login>> Update(Login login, int login_id)
         {
+            //Get Stores id Permission
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
+
             var update_login = await _context.Login
                 .Include(cl => cl.Store_login)
                 .Where(cl => cl.Id == login_id)
@@ -105,6 +108,11 @@ namespace AuFood.Controllers
             if (update_login == null)
             {
                 return NotFound();
+            }
+
+            if (update_login.Store_login.Any(w => vStoresID.Contains(w.Store_id)))
+            {
+                return Unauthorized();
             }
 
             foreach (var id in login.List_store_id)
@@ -133,8 +141,12 @@ namespace AuFood.Controllers
         [HttpGet("list_all")]
         public async Task<IEnumerable<Login>> ListAll()
         {
+            //Get Stores id Permission
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
+
             var list_all = await _context.Login
                 .Include(w => w.Store_login)
+                .Where(w => w.Store_login.Any(w => vStoresID.Contains(w.Store_id)))
                 .Select(w => new Login
                 {
                     Id = w.Id,
@@ -151,6 +163,9 @@ namespace AuFood.Controllers
         [HttpGet("{login_id}")]
         public async Task<ActionResult<Login>> GetClient(int login_id)
         {
+            //Get Stores id Permission
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
+
             var login = await _context.Login
                 .Include(w => w.Store_login)
                     .ThenInclude(w => w.Store)
@@ -162,6 +177,11 @@ namespace AuFood.Controllers
                 return NotFound();
             }
 
+            if (login.Store_login.Any(w => vStoresID.Contains(w.Store_id)))
+            {
+                return Unauthorized();
+            }
+
             login.List_store_id = login.Store_login.Select(cl => cl.Store_id).ToList();
 
             return login;
@@ -170,11 +190,22 @@ namespace AuFood.Controllers
         [HttpDelete("{login_id}")]
         public async Task<ActionResult<bool>> Delete(int login_id)
         {
-            var login_remove = await _context.Login.FindAsync(login_id);
+            //Get Stores id Permission
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
+
+            var login_remove = await _context.Login
+                .Include(w => w.Store_login)
+                .Where(w => w.Id == login_id)
+                .FirstOrDefaultAsync();
 
             if (login_remove == null)
             {
                 return NotFound();
+            }
+
+            if (login_remove.Store_login.Any(w => vStoresID.Contains(w.Store_id)))
+            {
+                return Unauthorized();
             }
 
             _context.Login.Remove(login_remove);
