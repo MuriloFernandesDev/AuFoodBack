@@ -3,6 +3,7 @@ using AuFood.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 namespace AuFood.Controllers
@@ -94,15 +95,15 @@ namespace AuFood.Controllers
             return login;
         }
 
-        [HttpPut("{login_id}")]
-        public async Task<ActionResult<Login>> Update(Login login, int login_id)
+        [HttpPut]
+        public async Task<ActionResult<Login>> Update(Login login)
         {
             //Get Stores id Permission
             var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
 
             var update_login = await _context.Login
                 .Include(cl => cl.Store_login)
-                .Where(cl => cl.Id == login_id)
+                .Where(cl => cl.Id == login.Id)
                 .FirstOrDefaultAsync();
 
             if (update_login == null)
@@ -158,6 +159,33 @@ namespace AuFood.Controllers
                 .ToListAsync();
 
             return list_all;
+        }
+
+        [HttpGet("my-profile")]
+        public async Task<ActionResult<Login>> GetClient()
+        {
+            //Get Stores id Permission
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
+
+            var login = await _context.Login
+                .Include(w => w.Store_login)
+                    .ThenInclude(w => w.Store)
+                .Where(w => w.Email == User.Identity.Name)
+                .FirstOrDefaultAsync();
+
+            if (login == null)
+            {
+                return NotFound();
+            }
+
+            if (!login.Store_login.Any(w => vStoresID.Contains(w.Store_id)))
+            {
+                return Unauthorized();
+            }
+
+            login.List_store_id = login.Store_login.Select(cl => cl.Store_id).ToList();
+
+            return login;
         }
 
         [HttpGet("{login_id}")]
