@@ -72,13 +72,13 @@ namespace AuFood.Controllers
             return store;
         }
 
-        [HttpPut("{store_id}")]
-        public async Task<ActionResult<Store>> CreateStore(Store newStore, int store_id)
+        [HttpPut]
+        public async Task<ActionResult<Store>> CreateStore(Store newStore)
         {
             //Get Stores id Permission
             var vStoresID = await Functions.getStores(_context, User.Identity.Name, null);
 
-            var store = await _context.Store.FindAsync(store_id);
+            var store = await _context.Store.FindAsync(newStore.Id);
 
             if (store == null)
                 return NotFound();

@@ -134,54 +134,54 @@ namespace AuFood.Controllers
             return product;
         }
 
-        [HttpPut("{product_id}")]
-        public async Task<ActionResult<Product>> Update(Product product, int product_id)
+        [HttpPut]
+        public async Task<ActionResult<Product>> Update(Product newProduct)
         {
             //Get Stores id Permission
             var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
 
-            var product_update = await _context.Product
+            var product = await _context.Product
                 .Include(w => w.Product_store)
-                .Where(w => w.Id == product_id)
+                .Where(w => w.Id == newProduct.Id)
                 .FirstOrDefaultAsync();
 
-            if (product_update == null)
+            if (product == null)
                 return NotFound();
 
-            if (!product_update.Product_store.Any(w => vStoresID.Contains(w.Store_id)))
+            if (!product.Product_store.Any(w => vStoresID.Contains(w.Store_id)))
                 return Unauthorized();
 
-            if(product != null && product.Product_price!.Count > 0)
+            if(newProduct != null && newProduct.Product_price!.Count > 0)
             {
-                product.Product_price = product.Product_price.Select(w => new Product_price
+                newProduct.Product_price = newProduct.Product_price.Select(w => new Product_price
                 {
                     Day_week = w.Day_week,
                     Price = (double)w.Price,
-                    Product_id = product_update.Id
+                    Product_id = product.Id
                 }).ToList();
             }
 
-            product.SerializeProps(ref product_update);
+            newProduct.SerializeProps(ref product);
 
-            product_update.Image = "";
+            product.Image = "";
 
-            foreach (var store_id in product.List_store_id)
+            foreach (var store_id in newProduct.List_store_id)
             {
-                if (!product_update.Product_store.Any(cc => cc.Store_id == store_id))
+                if (!product.Product_store.Any(cc => cc.Store_id == store_id))
                 {
                     var new_product_store = new Product_store
                     {
-                        Product_id = product_update.Id,
+                        Product_id = product.Id,
                         Store_id = store_id
                     };
 
-                    product_update.Product_store.Add(new_product_store);
+                    product.Product_store.Add(new_product_store);
                 }
             }
 
             await _context.SaveChangesAsync();
 
-            return product_update;
+            return product;
         }
 
         /// <summary>

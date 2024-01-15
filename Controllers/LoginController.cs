@@ -96,47 +96,48 @@ namespace AuFood.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<Login>> Update(Login login)
+        public async Task<ActionResult<Login>> Update(Login newLogin)
         {
             //Get Stores id Permission
             var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
 
-            var update_login = await _context.Login
+            var login = await _context.Login
                 .Include(cl => cl.Store_login)
-                .Where(cl => cl.Id == login.Id)
+                .Where(cl => cl.Id == newLogin.Id)
                 .FirstOrDefaultAsync();
 
-            if (update_login == null)
+            if (login == null)
             {
                 return NotFound();
             }
 
-            if (!update_login.Store_login.Any(w => vStoresID.Contains(w.Store_id)))
+            if (!login.Store_login.Any(w => vStoresID.Contains(w.Store_id)))
             {
                 return Unauthorized();
             }
 
-            foreach (var id in login.List_store_id)
+            foreach (var id in newLogin.List_store_id)
             {
-                if (!update_login.Store_login.Any(cc => cc.Store_id == id))
+                if (!login.Store_login.Any(cc => cc.Store_id == id))
                 {
                     var store_login = new Store_login
                     {
-                        Login_id = update_login.Id,
+                        Login_id = login.Id,
                         Store_id = id
                     };
 
-                    update_login.Store_login.Add(store_login);
+                    login.Store_login.Add(store_login);
                 }
             }
 
-            login.Password = Functions.CripterByte(login.Pass);
+            if(!newLogin.Pass.IsNullOrEmpty())
+                newLogin.Password = Functions.CripterByte(newLogin.Pass);
 
-            update_login.SerializeProps(ref login);
+            newLogin.SerializeProps(ref login);
 
             await _context.SaveChangesAsync();
 
-            return update_login;
+            return login;
         }
 
         [HttpGet("list_all")]
