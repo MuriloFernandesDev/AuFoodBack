@@ -52,7 +52,7 @@ namespace AuFood.Controllers
         public async Task<ActionResult<Consumer>> GetConsumer(string phone)
         {
             var consumer = await _context.Consumer
-                .Where(w => w.Phone == phone && w.Phone_confirmed == true)
+                .Where(w => w.Phone == phone)
                 .OrderBy(w => w.Id)
                 .Select(w => new Consumer
                 {

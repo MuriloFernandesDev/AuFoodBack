@@ -73,7 +73,7 @@ namespace AuFood.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<Store>> CreateStore(Store newStore)
+        public async Task<ActionResult<Store>> UpdateStore(Store newStore)
         {
             //Get Stores id Permission
             var vStoresID = await Functions.getStores(_context, User.Identity.Name, null);
