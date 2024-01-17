@@ -3,22 +3,14 @@ using AuFood.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using NuGet.Protocol;
 
 namespace AuFood.Controllers
 {
-    public class Product_list
+    public class Product_list : Product
     {
-        public string Name { get; set; }
-
-        public int Id { get; set; }
-
         public double Price { get; set; }
-
-        public string Time_delivery { get; set; }
-
-        public Models.Product_category? product_category { get; set; }
-
-        public string Image { get; set; }
     }
 
     public class Product_category
@@ -32,7 +24,7 @@ namespace AuFood.Controllers
 
     public class ListInt
     {
-        public List<int> list_id { get; set; }
+        public string list_id { get; set; }
     }
 
     public class IParams
@@ -51,7 +43,60 @@ namespace AuFood.Controllers
         {
             _context = context;
         }
-        
+
+        [AllowAnonymous]
+        [HttpGet("list_product_cart/{store_id}")]
+        public async Task<IEnumerable<Product>> GetListProduct([FromQuery] ListInt pParams, int store_id)
+        {
+            var ListProductOnStore = await ProductAux.GetAllProductOnStore(_context, store_id);
+
+            var listIds = JsonConvert.DeserializeObject<List<int>>(pParams.list_id);
+
+            var ListProduct = await _context.Product
+                .Where(w => listIds.Contains(w.Id) && ListProductOnStore.Contains(w.Id))
+                .Select(p => new Product_list
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Price = p.Product_price
+                        .Where(pp => pp.Day_week == DateTime.Now.DayOfWeek)
+                        .Select(pp => (double?)pp.Price)
+                        .FirstOrDefault() ?? 0.00,
+                    Product_category = p.Product_category,
+                    Image = p.Image,
+                    Description = p.Description
+                })
+                .ToListAsync();
+
+            return ListProduct;
+        }
+
+        [AllowAnonymous]
+        [HttpGet("info_product/{product_id}")]
+        public async Task<ActionResult<Product>> GetInfoProduct(int product_id)
+        {
+            var Product = await _context.Product
+                .Where(w => w.Id == product_id)
+                .Select(p => new Product_list
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Price = p.Product_price
+                        .Where(pp => pp.Day_week == DateTime.Now.DayOfWeek)
+                        .Select(pp => (double?)pp.Price)
+                        .FirstOrDefault() ?? 0.00,
+                    Product_category = p.Product_category,
+                    Image = p.Image,
+                    Description = p.Description
+                })
+                .FirstOrDefaultAsync();
+
+            if (Product == null)
+                return NotFound();
+
+            return Product;
+        }
+
         [AllowAnonymous]
         [HttpGet("list_all/{id}")]
         public async Task<IEnumerable<Product_list>> GetListProduct(int id)
@@ -70,8 +115,9 @@ namespace AuFood.Controllers
                         .Where(pp => pp.Day_week == DateTime.Now.DayOfWeek)
                         .Select(pp => (double?)pp.Price)
                         .FirstOrDefault() ?? 0.00, 
-                    product_category = p.Product_category,
-                    Image = p.Image
+                    Product_category = p.Product_category,
+                    Image = p.Image,
+                    Description = p.Description
                 })
                 .ToListAsync();
 
@@ -93,7 +139,7 @@ namespace AuFood.Controllers
                 {
                     Id = p.Id,
                     Name = p.Name,
-                    product_category = p.Product_category,
+                    Product_category = p.Product_category,
                     Image = p.Image
                 })
                 .AsQueryable();
@@ -103,7 +149,7 @@ namespace AuFood.Controllers
             //If you can't find a product by name, search for products by category name
             if (!ListFilterNameProduct.Any())
             {
-                ListProduct = ListProduct.Where(w => w.product_category.Name.ToLower().Contains(pParams.q)).AsQueryable();
+                ListProduct = ListProduct.Where(w => w.Product_category.Name.ToLower().Contains(pParams.q)).AsQueryable();
             }
             else
             {

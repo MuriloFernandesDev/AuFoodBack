@@ -24,7 +24,7 @@ namespace AuFood.Controllers
     public class product_id
     {
         public int id { get; set; }
-        public int quantity { get; set; }
+        public string? observation { get; set; }
     }
 
     public class newOrder
@@ -134,6 +134,19 @@ namespace AuFood.Controllers
             return Ok();
         }
 
+        [HttpGet("total_orders")]
+        public async Task<ActionResult<int>> getTotalOrders()
+        {
+            //Get Stores id Permission
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, null);
+
+            var total_orders = await _context.Order
+                .Where(w => vStoresID.Contains(w.Store_id) && w.Status == OrderStatus.Done)
+                .CountAsync();
+
+            return total_orders;
+        }
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<ActionResult<Order>> Post(newOrder order)
@@ -190,8 +203,8 @@ namespace AuFood.Controllers
             {
                 Order_id = newOrder.Id,
                 Product_id = w.id,
-                Quantity = w.quantity,
-                Price = _context.Product_price.Find(w.id)?.Price ?? 0
+                Observation = w.observation,
+                Price = _context.Product_price.Where(pp => pp.Day_week == DateTime.Now.DayOfWeek && pp.Product_id == w.id).Select(w => w.Price).FirstOrDefault()
             }).ToList();
 
             _context.Order_product.AddRange(OrderProduct);

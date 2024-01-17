@@ -3,6 +3,7 @@ using System;
 using AuFood.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuFood.Migrations
 {
     [DbContext(typeof(_DbContext))]
-    partial class _DbContextModelSnapshot : ModelSnapshot
+    [Migration("20240117125506_NovoCampoViewsStore")]
+    partial class NovoCampoViewsStore
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -224,13 +227,8 @@ namespace AuFood.Migrations
 
             modelBuilder.Entity("AuFood.Models.Order_product", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("Product_id")
                         .HasColumnType("int");
-
-                    b.Property<string>("Observation")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("Order_id")
                         .HasColumnType("int");
@@ -238,15 +236,12 @@ namespace AuFood.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("double");
 
-                    b.Property<int>("Product_id")
+                    b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("Id")
-                        .HasName("PRIMARY");
+                    b.HasKey("Product_id", "Order_id");
 
                     b.HasIndex("Order_id");
-
-                    b.HasIndex("Product_id");
 
                     b.ToTable("Order_product");
                 });
@@ -589,15 +584,13 @@ namespace AuFood.Migrations
                         .WithMany("Order_product")
                         .HasForeignKey("Order_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_order_product_order");
+                        .IsRequired();
 
                     b.HasOne("AuFood.Models.Product", "Product")
                         .WithMany("Order_product")
                         .HasForeignKey("Product_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_order_product_product");
+                        .IsRequired();
 
                     b.Navigation("Order");
 

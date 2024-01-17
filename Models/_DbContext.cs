@@ -177,8 +177,8 @@ namespace AuFood.Models
                 entity.Property(e => e.Name)
                     .HasMaxLength(30);
 
-                entity.Property(e => e.Phone)
-                    .HasMaxLength(30);
+                entity.Property(e => e.Views)
+                    .HasColumnType("int");
 
                 entity.Property(e => e.Whatsapp)
                     .HasMaxLength(30);
@@ -346,30 +346,33 @@ namespace AuFood.Models
 
             modelBuilder.Entity<Order_product>(entity =>
             {
-                entity.HasKey(x => new { x.Product_id, x.Order_id });
+                entity.HasKey(e => e.Id)
+                    .HasName("PRIMARY");
 
-                entity.Property(e => e.Quantity)
+                entity.Property(e => e.Product_id)
                     .HasColumnType("int");
+
+                entity.Property(e => e.Order_id)
+                    .HasColumnType("int");
+
+                entity.Property(e => e.Observation)
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.Price)
                     .HasColumnType("double");
+
+                entity.HasOne(e => e.Product)
+                    .WithMany(e => e.Order_product)
+                    .HasForeignKey(e => e.Product_id)
+                    .HasConstraintName("FK_order_product_product");
+
+                entity.HasOne(e => e.Order)
+                    .WithMany(e => e.Order_product)
+                    .HasForeignKey(e => e.Order_id)
+                    .HasConstraintName("FK_order_product_order");
             });
-
-
             
             // ** Relacionamentos N x N ** //
-
-
-            // ** Order_Product
-            modelBuilder.Entity<Order_product>()
-                .HasOne(w => w.Product)
-                .WithMany(s => s.Order_product)
-                .HasForeignKey(w => w.Product_id);
-
-            modelBuilder.Entity<Order_product>()
-                .HasOne(w => w.Order)
-                .WithMany(sc => sc.Order_product)
-                .HasForeignKey(w => w.Order_id);
 
             // ** Consumer_Store
             modelBuilder.Entity<Consumer_store>()

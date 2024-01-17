@@ -4,9 +4,11 @@ namespace AuFood.Models
 {
     public partial class Order_product
     {
-        public int Quantity { get; set; }
+        public int Id { get; set; }
 
         public double Price { get; set; }
+
+        public string? Observation { get; set; }
 
         public int Order_id { get; set; }
 

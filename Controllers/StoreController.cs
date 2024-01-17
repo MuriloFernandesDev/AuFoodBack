@@ -39,6 +39,10 @@ namespace AuFood.Controllers
             if (Store == null)
                 return NotFound();
 
+            Store.Views += 1;
+
+            await _context.SaveChangesAsync();
+
             return Store;
         }
 
@@ -58,6 +62,20 @@ namespace AuFood.Controllers
             }).ToList();
              
             return StoreListAll;
+        }
+
+        [HttpGet("views")]
+        public async Task<ActionResult<int>> GetQuantityViews()
+        {
+            //Get Stores id Permission
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, null);
+
+            var store_views = await _context.Store
+                .Where(w => vStoresID.Contains(w.Id))
+                .Select(w => w.Views)
+                .ToListAsync();
+
+            return store_views.Sum(w => w) ?? 0;
         }
 
         [HttpPost]

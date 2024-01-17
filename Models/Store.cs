@@ -24,8 +24,6 @@ namespace AuFood.Models
 
         public string Whatsapp { get; set; }
 
-        public string? Phone { get; set; }
-
         public string Email { get; set; }
 
         public string Number_address { get; set; }
@@ -47,6 +45,8 @@ namespace AuFood.Models
         public string Neighborhood { get; set; }
 
         public int City_id { get; set; }
+
+        public int? Views { get; set; }
 
         public virtual City? City { get; set; }
 
