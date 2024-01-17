@@ -42,6 +42,19 @@ namespace AuFood.Controllers
             return list_consumer_by_store;
         }
 
+        [HttpGet("total_consumer_store")]
+        public async Task<ActionResult<int>> getTotalConsumerStore()
+        {
+            //Get Stores id Permission
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
+
+            var total_consumer = await _context.Consumer_store
+                .Where(w => vStoresID.Contains(w.Store_id))
+                .CountAsync();
+
+            return total_consumer;
+        }
+
         /// <summary>
         /// Get list all Consumer from Store
         /// </summary>

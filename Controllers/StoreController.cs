@@ -68,7 +68,7 @@ namespace AuFood.Controllers
         public async Task<ActionResult<int>> GetQuantityViews()
         {
             //Get Stores id Permission
-            var vStoresID = await Functions.getStores(_context, User.Identity.Name, null);
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
 
             var store_views = await _context.Store
                 .Where(w => vStoresID.Contains(w.Id))
@@ -140,7 +140,7 @@ namespace AuFood.Controllers
         public async Task<ActionResult<Store>> GetStore(int store_id)
         {
             //Get Stores id Permission
-            var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, null);
 
             var Store = await _context.Store
                 .Include(w => w.City)

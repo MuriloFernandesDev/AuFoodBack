@@ -138,13 +138,27 @@ namespace AuFood.Controllers
         public async Task<ActionResult<int>> getTotalOrders()
         {
             //Get Stores id Permission
-            var vStoresID = await Functions.getStores(_context, User.Identity.Name, null);
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
 
             var total_orders = await _context.Order
                 .Where(w => vStoresID.Contains(w.Store_id) && w.Status == OrderStatus.Done)
                 .CountAsync();
 
             return total_orders;
+        }
+
+        [HttpGet("total_order_product")]
+        public async Task<ActionResult<int>> getTotalOrdersProduct()
+        {
+            //Get Stores id Permission
+            var vStoresID = await Functions.getStores(_context, User.Identity.Name, Request.HeaderStoreId());
+
+            var total_orders_product = await _context.Order_product
+                .Include(w => w.Order)
+                .Where(w => vStoresID.Contains(w.Order.Store_id) && w.Order.Status == OrderStatus.Done)
+                .CountAsync();
+
+            return total_orders_product;
         }
 
         [HttpPost]
