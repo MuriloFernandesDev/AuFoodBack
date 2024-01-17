@@ -139,8 +139,13 @@ namespace AuFood.Controllers
                 {
                     Id = p.Id,
                     Name = p.Name,
+                    Price = p.Product_price
+                        .Where(pp => pp.Day_week == DateTime.Now.DayOfWeek)
+                        .Select(pp => (double?)pp.Price)
+                        .FirstOrDefault() ?? 0.00,
                     Product_category = p.Product_category,
-                    Image = p.Image
+                    Image = p.Image,
+                    Description = p.Description
                 })
                 .AsQueryable();
 
