@@ -187,32 +187,31 @@ namespace AuFood.Controllers
 
                 ConsumerAddress = NewConsumerAddress;
             }
-            
-            var newOrder = order.order;
 
-            newOrder.Consumer = Consumer;
-            newOrder.Consumer_address = ConsumerAddress;
-            newOrder.Store_id = Store.Id;
-            newOrder.Date = DateTime.Now;
-            newOrder.Total_price = 0;
-
-            _context.Order.Add(newOrder);
-            await _context.SaveChangesAsync();
-
-            var OrderProduct = order.products.Select(w => new Order_product
+            var newOrderEntity = new Order
             {
-                Order_id = newOrder.Id,
-                Product_id = w.id,
-                Observation = w.observation,
-                Price = _context.Product_price.Where(pp => pp.Day_week == DateTime.Now.DayOfWeek && pp.Product_id == w.id).Select(w => w.Price).FirstOrDefault()
-            }).ToList();
+                Consumer = Consumer,
+                Consumer_address = ConsumerAddress,
+                Store_id = Store.Id,
+                Date = DateTime.Now,
+                Total_price = 0,
+                Order_product = order.products.Select(w => new Order_product
+                {
+                    Product_id = w.id,
+                    Observation = w.observation,
+                    Price = _context.Product_price
+                        .Where(pp => pp.Day_week == DateTime.Now.DayOfWeek && pp.Product_id == w.id)
+                        .Select(w => w.Price)
+                        .FirstOrDefault()
+                }).ToList()
+            };
 
-            _context.Order_product.AddRange(OrderProduct);
+            newOrderEntity.Total_price = newOrderEntity.Order_product.Sum(w => w.Price);
 
-            newOrder.Total_price = OrderProduct.Sum(w => w.Price);
-
+            _context.Order.Add(newOrderEntity);
             await _context.SaveChangesAsync();
-            return newOrder;
+
+            return newOrderEntity;
         }
     }
 }
