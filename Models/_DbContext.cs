@@ -16,10 +16,6 @@ namespace AuFood.Models
         public DbSet<Login> Login { get; set; }
         
         public DbSet<Store> Store { get; set; }
-        
-        public DbSet<Store_category> Store_category { get; set; }
-        
-        public DbSet<Store_category_store> Store_category_store { get; set; }
 
         public DbSet<City> City { get; set; }
 
@@ -211,18 +207,6 @@ namespace AuFood.Models
                    .HasConstraintName("FK_store_city");
             });
 
-            modelBuilder.Entity<Store_category>(entity =>
-            {
-                entity.HasKey(e => e.Id)
-                    .HasName("PRIMARY");
-
-                entity.Property(e => e.Name)
-                    .HasMaxLength(30);
-
-                entity.Property(e => e.Icon)
-                    .HasMaxLength(30);
-            });
-
             modelBuilder.Entity<State>(entity =>
             {
                 entity.HasKey(e => e.Id)
@@ -300,12 +284,6 @@ namespace AuFood.Models
                     .HasForeignKey(e => e.Consumer_id)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_consumer_consumer_address");
-                
-                entity.HasOne(e => e.City)
-                    .WithMany(e => e.Consumer_address)
-                    .HasForeignKey(e => e.City_id)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_consumer_city");
             });
 
             modelBuilder.Entity<Order>(entity =>
@@ -415,21 +393,6 @@ namespace AuFood.Models
                  .HasOne(w => w.Login)
                  .WithMany(s => s.Store_login)
                  .HasForeignKey(w => w.Login_id);
-
-            // ** StoreCategory_Store
-            modelBuilder.Entity<Store_category_store>()
-                 .HasKey(w => new { w.Store_id, w.Store_category_id });
-
-            modelBuilder.Entity<Store_category_store>()
-                 .HasOne(w => w.Store)
-                 .WithMany(s => s.Store_category_store)
-                 .HasForeignKey(w => w.Store_id);
-
-            modelBuilder.Entity<Store_category_store>()
-                .HasOne(w => w.Store_category)
-                .WithMany(sc => sc.Store_category_store)
-                .HasForeignKey(w => w.Store_category_id);
-
 
             ///////////// Exemplos de uso
             

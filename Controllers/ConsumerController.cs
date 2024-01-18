@@ -116,7 +116,6 @@ namespace AuFood.Controllers
         {
             var consumer = await _context.Consumer
                 .Include(w => w.Consumer_address)
-                    .ThenInclude(w => w.City)
                 .Where(w => w.Id == consumer_id)
                 .FirstOrDefaultAsync();
 

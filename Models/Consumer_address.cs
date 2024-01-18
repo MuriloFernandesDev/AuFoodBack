@@ -20,12 +20,8 @@ namespace AuFood.Models
         public string? Complement { get; set; }
         
         public int? ZipCode { get; set; }
-        
-        public int? City_id { get; set; }
 
         public int Consumer_id { get; set; }
-
-        public virtual City? City { get; set; }
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]

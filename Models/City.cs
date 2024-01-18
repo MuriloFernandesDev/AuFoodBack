@@ -4,7 +4,6 @@
     {
         public City() {
             Store = new HashSet<Store>();
-            Consumer_address = new HashSet<Consumer_address>();
         }
     
         public int Id { get; set; }
@@ -18,9 +17,5 @@
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
         public ICollection<Store> Store { get; set; }
-
-        [System.Text.Json.Serialization.JsonIgnore]
-        [Newtonsoft.Json.JsonIgnore]
-        public ICollection<Consumer_address> Consumer_address { get; set; }
     }
 }

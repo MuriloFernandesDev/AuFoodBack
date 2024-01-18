@@ -114,15 +114,6 @@ namespace AuFood.Controllers
             return store;
         }
 
-        [HttpPost("storeCategory")]
-        public async Task<Store_category> CreateStoreCategory(Store_category storeCategory)
-        {
-            _context.Store_category.Add(storeCategory);
-
-            await _context.SaveChangesAsync();
-            return storeCategory;
-        }
-
         [HttpGet("list_all")]
         public async Task<IEnumerable<Store>> ListAll()
         {

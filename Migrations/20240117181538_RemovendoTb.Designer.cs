@@ -3,6 +3,7 @@ using System;
 using AuFood.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuFood.Migrations
 {
     [DbContext(typeof(_DbContext))]
-    partial class _DbContextModelSnapshot : ModelSnapshot
+    [Migration("20240117181538_RemovendoTb")]
+    partial class RemovendoTb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -88,6 +91,9 @@ namespace AuFood.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int?>("City_id")
+                        .HasColumnType("int");
+
                     b.Property<string>("Complement")
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
@@ -112,6 +118,8 @@ namespace AuFood.Migrations
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");
+
+                    b.HasIndex("City_id");
 
                     b.HasIndex("Consumer_id");
 
@@ -474,12 +482,20 @@ namespace AuFood.Migrations
 
             modelBuilder.Entity("AuFood.Models.Consumer_address", b =>
                 {
+                    b.HasOne("AuFood.Models.City", "City")
+                        .WithMany("Consumer_address")
+                        .HasForeignKey("City_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_consumer_city");
+
                     b.HasOne("AuFood.Models.Consumer", "Consumer")
                         .WithMany("Consumer_address")
                         .HasForeignKey("Consumer_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_consumer_consumer_address");
+
+                    b.Navigation("City");
 
                     b.Navigation("Consumer");
                 });
@@ -630,6 +646,8 @@ namespace AuFood.Migrations
 
             modelBuilder.Entity("AuFood.Models.City", b =>
                 {
+                    b.Navigation("Consumer_address");
+
                     b.Navigation("Store");
                 });
 

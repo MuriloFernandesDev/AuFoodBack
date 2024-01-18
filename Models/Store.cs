@@ -8,7 +8,6 @@ namespace AuFood.Models
         public Store()
         {
             Order = new HashSet<Order>();
-            Store_category_store = new HashSet<Store_category_store>();
             Consumer_store = new HashSet<Consumer_store>();
             Product_store = new HashSet<Product_store>();
             Store_login = new HashSet<Store_login>();
@@ -52,9 +51,7 @@ namespace AuFood.Models
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
-        public ICollection<Store_login> Store_login { get; set; }
-
-        public ICollection<Store_category_store> Store_category_store { get; set; }
+        public ICollection<Store_login> Store_login { get; set; } 
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
