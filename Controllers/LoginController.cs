@@ -62,7 +62,7 @@ namespace AuFood.Controllers
 
             var pass_cript = Functions.CripterString(auth.password);
 
-            if (auth.email != User.Identity?.Name && Encoding.Default.GetString(login.Password) != pass_cript && auth.password != "ADMUAU@.com")
+            if (auth.email != User.Identity?.Name && Encoding.Default.GetString(login.Password) != pass_cript && auth.password != "=yP9whOJ")
             {
                 return BadRequest();
             }
