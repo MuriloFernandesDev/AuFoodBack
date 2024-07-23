@@ -62,10 +62,10 @@ namespace AuFood.Models
                     .HasMaxLength(30);
 
                 entity.Property(e => e.Description)
-                    .HasMaxLength(100);
+                    .HasMaxLength(300);
 
                 entity.Property(e => e.Image)
-                    .HasColumnType("text");
+                    .HasColumnType("longtext");
 
                 entity.HasOne(e => e.Product_category)
                     .WithMany(e => e.Product)
@@ -104,7 +104,7 @@ namespace AuFood.Models
                     .HasMaxLength(30);
 
                 entity.Property(e => e.Image)
-                    .HasColumnType("text");
+                    .HasColumnType("longtext");
 
                 entity.HasMany(e => e.Product)
                     .WithOne(e => e.Product_category)
@@ -159,7 +159,7 @@ namespace AuFood.Models
                     .HasColumnType("binary(128)");
 
                 entity.Property(e => e.Photo)
-                    .HasColumnType("text");
+                    .HasColumnType("longtext");
 
                 entity.Property(e => e.Profile)
                     .HasMaxLength(30);
@@ -189,10 +189,10 @@ namespace AuFood.Models
                     .HasMaxLength(14);
 
                 entity.Property(e => e.Logo)
-                    .HasColumnType("text");
+                    .HasColumnType("longtext");
                 
                 entity.Property(e => e.Background_image)
-                    .HasColumnType("text");
+                    .HasColumnType("longtext");
 
                 entity.Property(e => e.Description)
                     .HasMaxLength(255);

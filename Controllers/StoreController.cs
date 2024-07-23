@@ -81,8 +81,8 @@ namespace AuFood.Controllers
         [HttpPost]
         public async Task<Store> CreateStore(Store store)
         {
-            store.Background_image = "https://images3.alphacoders.com/131/1313839.jpg";
-            store.Logo = "https://img.freepik.com/vetores-premium/vetor-do-logotipo-do-burger-art-design_260747-237.jpg";
+            //store.Background_image = "https://images3.alphacoders.com/131/1313839.jpg";
+            //store.Logo = "https://img.freepik.com/vetores-premium/vetor-do-logotipo-do-burger-art-design_260747-237.jpg";
 
             _context.Store.Add(store);
             await _context.SaveChangesAsync();
@@ -104,8 +104,8 @@ namespace AuFood.Controllers
             if (!vStoresID.Contains(store.Id))
                 return Unauthorized(new { msg = "Não possui permissão para essa loja." });
 
-            newStore.Background_image = "https://images3.alphacoders.com/131/1313839.jpg";
-            newStore.Logo = "https://img.freepik.com/vetores-premium/vetor-do-logotipo-do-burger-art-design_260747-237.jpg";
+            //newStore.Background_image = "https://images3.alphacoders.com/131/1313839.jpg";
+            //newStore.Logo = "https://img.freepik.com/vetores-premium/vetor-do-logotipo-do-burger-art-design_260747-237.jpg";
 
             newStore.SerializeProps(ref store);
 

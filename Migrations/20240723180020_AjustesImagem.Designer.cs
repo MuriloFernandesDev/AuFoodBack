@@ -3,6 +3,7 @@ using System;
 using AuFood.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuFood.Migrations
 {
     [DbContext(typeof(_DbContext))]
-    partial class _DbContextModelSnapshot : ModelSnapshot
+    [Migration("20240723180020_AjustesImagem")]
+    partial class AjustesImagem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -254,8 +257,8 @@ namespace AuFood.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("varchar(300)");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Image")
                         .IsRequired()

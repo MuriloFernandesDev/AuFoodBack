@@ -176,7 +176,7 @@ namespace AuFood.Controllers
                 })
                 .ToList();
 
-            product.Image = "";
+            //product.Image = "";
             
             _context.Product.Add(product);
 
@@ -214,7 +214,7 @@ namespace AuFood.Controllers
 
             newProduct.SerializeProps(ref product);
 
-            product.Image = "";
+            //product.Image = "";
 
             foreach (var store_id in newProduct.List_store_id)
             {

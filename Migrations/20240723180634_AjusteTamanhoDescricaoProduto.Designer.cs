@@ -3,6 +3,7 @@ using System;
 using AuFood.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuFood.Migrations
 {
     [DbContext(typeof(_DbContext))]
-    partial class _DbContextModelSnapshot : ModelSnapshot
+    [Migration("20240723180634_AjusteTamanhoDescricaoProduto")]
+    partial class AjusteTamanhoDescricaoProduto
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
